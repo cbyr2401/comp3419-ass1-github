@@ -36,33 +36,6 @@ PImage greyscaleimage(PImage img)
   return nImg;
 }
 
-// Creates a grey scale pixel of a given location in an image
-// @Params: location, image
-// @Return: color of pixel
-color greyscalepixel(int loc, PImage img)
-{
-  float rtotal = 0.0;
-  float gtotal = 0.0;
-  float btotal = 0.0;
-  float greytotal = 0.0;
-
-  // Calculate the grey scale
-  rtotal = (red(img.pixels[loc]) * 0.21267);
-  gtotal = (green(img.pixels[loc]) * 0.715160);
-  btotal = (blue(img.pixels[loc]) * 0.072169);
-  greytotal = rtotal + gtotal + btotal;
-  
-  
-  // Make sure RGB is within range
-  rtotal = constrain(rtotal, 0, 255);
-  gtotal = constrain(gtotal, 0, 255);
-  btotal = constrain(btotal, 0, 255);
-  
-  // Return the resulting color
-  //return color(rtotal, gtotal, btotal);
-  return color(greytotal);
-}
-
 // Finds the edges of an object and returns as a new PImage
 // @Params: PImage frame
 // @Return: PImage edges of frame objects
