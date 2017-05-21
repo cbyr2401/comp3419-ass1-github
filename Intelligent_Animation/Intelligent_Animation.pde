@@ -12,6 +12,7 @@ import processing.sound.*;
 // GLOBAL VARIABLES
 Movie originalMovie;
 PImage segmentedImg;
+int framenumber = 0;
 
 // Processing Set-up function.  This is run once.  All initial 
 //  parameters and settings are set here.
@@ -26,7 +27,7 @@ void setup(){
   
   // play the original movie file
   originalMovie.play();
-  originalMovie.loop();
+  //originalMovie.loop();
   
 }
 
@@ -47,7 +48,11 @@ void draw(){
 //  new frame is available to read for the playing movie.
 void movieEvent(Movie m) {
   m.read();
-  segmentedImg = segmentRed(m);
+  segmentedImg = segmentMarkers(m, false);
+  
+  // save the frame
+  //segmentedImg.save(sketchPath("") + "segemented/image" + nf(framenumber, 4) + ".tif");
+  framenumber++;
 }
 
 
@@ -56,7 +61,11 @@ void movieEvent(Movie m) {
 
 
 // FUNCTIONS FOR GENERATING MOVIE OBJECTS
-PImage segmentRed(PImage video)
+
+// Segements the red markers from the image and returns as a PImage
+// @param: PImage video frame, produce binary image
+// @return: PImage segmented frame
+PImage segmentMarkers(PImage video, boolean bin_image)
 {
   // variables to control the placement within the new background
   //  this is required if your canvas is a different size to the
@@ -67,6 +76,11 @@ PImage segmentRed(PImage video)
   // create a blank image to place the segment on
   PImage blank = new PImage(video.width, video.height);
   
+  // Remove all the pixels that do not contain high enough levels of 
+  //  red.  The thresholds have been found by experimentation:
+  int AlphaRed = 160;
+  int AlphaGreen = 110;  
+  
   // go through all the pixels of the monkey frame.
   for(int x = 0; x < video.width; x++){
     for(int y = 0; y < video.height; y++){
@@ -75,13 +89,17 @@ PImage segmentRed(PImage video)
       int mloc = x + y * video.width;
       color c = video.pixels[mloc];
     
-      // if the pixel has color, calculate the new location
-      
-      if( red(c) > 160 ) {
+      // if the pixel correct has color, calculate the new location 
+      if( red(c) > AlphaRed && green(c) < AlphaGreen ) {
         int bgx = constrain(x + adjust_width, 0, blank.width);
         int bgy = constrain(y + adjust_height, 0, blank.height);
         int bgloc = bgx + bgy * blank.width;
-        blank.pixels[bgloc] = c;
+        if ( bin_image == true ){
+          blank.pixels[bgloc] = color(255,255,255);
+        }
+        else {
+          blank.pixels[bgloc] = c;
+        }
       }
     }
   }
