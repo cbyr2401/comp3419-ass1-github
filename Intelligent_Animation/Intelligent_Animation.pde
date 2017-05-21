@@ -2,7 +2,7 @@
 //
 //  @author: wallarug
 //  @created: 17/05/2017 22:11 PM
-//  @modified: 17/05/2017 22:20 PM
+//  @modified: 21/05/2017 22:20 PM
 
 // IMPORTS
 import processing.video.*;
@@ -57,11 +57,6 @@ void movieEvent(Movie m) {
 
 
 // FUNCTIONS FOR SEGEMENTING MOTION
-
-
-
-// FUNCTIONS FOR GENERATING MOVIE OBJECTS
-
 // Segements the red markers from the image and returns as a PImage
 // @param: PImage video frame, produce binary image
 // @return: PImage segmented frame
@@ -107,3 +102,11 @@ PImage segmentMarkers(PImage video, boolean bin_image)
   // return the new canvas with the segmented image on it
   return blank;
 }
+
+
+// FUNCTIONS FOR GENERATING MOVIE OBJECTS
+
+
+//
+//    ~~ SPLIT ~~
+//
