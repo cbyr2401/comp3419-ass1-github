@@ -12,6 +12,8 @@ import processing.sound.*;
 // GLOBAL VARIABLES
 Movie originalMovie;
 PImage segmentedImg;
+PImage binaryImg;
+PImage improvedImg;
 int framenumber = 0;
 
 // Processing Set-up function.  This is run once.  All initial 
@@ -25,6 +27,11 @@ void setup(){
   // stop the null pointer
   segmentedImg = loadImage("blank.png");
   
+  // stop the null pointer
+  binaryImg = loadImage("blank.png");
+  
+  improvedImg = loadImage("blank.png");
+  
   // play the original movie file
   originalMovie.play();
   //originalMovie.loop();
@@ -35,11 +42,28 @@ void setup(){
 //  and controls all drawing / output to the display.
 void draw(){
   
+  // some debug text
+  textSize(18);
+  fill(255,0,0);
+  
   // draw the original movie to the top left box
   image(originalMovie, 0, 0);
+  text("Original Movie File", 284, 318);
   
   // draw the segmented movie to the top right box
   image(segmentedImg, 568, 0);
+  text("Segmented Image", 568+284, 318);
+  
+  // draw the binary movie to the bottom right box
+  image(binaryImg, 568, 320);
+  text("Binary Image", 568+284, 636);
+  
+  // draw the improved binary image to the bottom left box
+  image(improvedImg, 568, 0);
+  text("Improved Image", 568+284, 318);
+  
+  // export the whole image frame
+  //saveFrame();
   
 }
 
@@ -49,9 +73,11 @@ void draw(){
 void movieEvent(Movie m) {
   m.read();
   segmentedImg = segmentMarkers(m, false);
+  binaryImg = segmentMarkers(m, true);
+  improvedImg = correctAndEnhance(binaryImg);
   
   // save the frame
-  //segmentedImg.save(sketchPath("") + "segemented/image" + nf(framenumber, 4) + ".tif");
+  binaryImg.save(sketchPath("") + "binary/image" + nf(framenumber, 4) + ".tif");
   framenumber++;
 }
 
@@ -98,11 +124,23 @@ PImage segmentMarkers(PImage video, boolean bin_image)
       }
     }
   }
-  
   // return the new canvas with the segmented image on it
   return blank;
 }
 
+// Improves the segemented image by removing artifacts
+// @param: PImage binary image
+// @return: PImage improveed frame
+PImage correctAndEnhance(PImage bin){
+  PImage improvement = new PImage(bin.width, bin.height);
+  
+  // first erode all the small bits
+  improvement = erosion(bin);
+  // close image
+  improvement = closing(improvement);
+
+  return improvement;
+}
 
 // FUNCTIONS FOR GENERATING MOVIE OBJECTS
 
