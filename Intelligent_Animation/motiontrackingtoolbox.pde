@@ -126,18 +126,3 @@ float SSD(PImage A, int ax, int ay, PImage B, int bx, int by, int blocksize){
   //sum = sqrt((float)sum);
   return sum; 
 }
-
-
-// Draws an arrow to the main display.
-// @Params: PImage previous, PImage current, gridsize
-// @Return: PImage PGraphic
-void arrowdraw(int x1, int y1, int x2, int y2) { 
-  line(x1, y1, x2, y2);
-  pushMatrix(); 
-  translate(x2, y2); 
-  float a = atan2(x1-x2, y2-y1); 
-  rotate(a); 
-  line(0, 0, -10, -10);
-  line(0, 0, 10, -10); 
-  popMatrix(); 
-}
