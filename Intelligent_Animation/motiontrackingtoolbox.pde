@@ -7,7 +7,7 @@
 // Searches an image, checking if where blocks have moved.
 // @Params: PImage previous, PImage current, gridsize
 // @Return: PImage PGraphic
-PGraphics searchBlocks(PImage A, PImage B, int gridsize){
+PGraphics mt_searchBlocks(PImage A, PImage B, int gridsize){
   int NEIGHBOURHOOD = 3 * gridsize;
   int LARGENUM = 20000000;
   int WLIMITPX = A.width - (gridsize-1);
@@ -53,7 +53,7 @@ PGraphics searchBlocks(PImage A, PImage B, int gridsize){
         for(int by = ay - NEIGHBOURHOOD; by < ay + NEIGHBOURHOOD && (by < HLIMITPX); by += gridsize){
           // complete the SSD for each block and store the result...
           if( bx > -1 && by > -1 && ax > -1 && ay > -1){
-            res = SSD(A, ax, ay, B, bx, by, gridsize);
+            res = _SSD(A, ax, ay, B, bx, by, gridsize);
             if (res < resmin){
               resmin = res;
               coords[0] = bx;
@@ -108,7 +108,7 @@ PGraphics searchBlocks(PImage A, PImage B, int gridsize){
 // Forumla: SSD(Block_i, Block_i+1) = squareroot ( sum(colorsA - colorsB ) ^2 )
 // @Params: PImage previous, PImage current, gridsize
 // @Return: PImage PGraphic
-float SSD(PImage A, int ax, int ay, PImage B, int bx, int by, int blocksize){
+float _SSD(PImage A, int ax, int ay, PImage B, int bx, int by, int blocksize){
   float sum = 0;
   int cellA = 0;
   int cellB = 0;

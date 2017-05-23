@@ -7,7 +7,7 @@
 // Creates a grey scale image of a given frame
 // @Params: PImage image
 // @Return: PImage greyscale of image
-PImage greyscaleimage(PImage img)
+PImage im_greyscale(PImage img)
 {
   // create a new image to return with grey scale.
   PImage nImg = new PImage(img.width, img.height);
@@ -39,9 +39,9 @@ PImage greyscaleimage(PImage img)
 // Finds the edges of an object and returns as a new PImage
 // @Params: PImage frame
 // @Return: PImage edges of frame objects
-PImage edgedetection(PImage img){
+PImage im_edgedetection(PImage img){
  // dilate and erode first
- PImage open = dilation(img);
+ PImage open = im_dilation(img);
  
  // subtract the source from the result:
  PImage result = new PImage(img.width, img.height);
@@ -59,9 +59,9 @@ PImage edgedetection(PImage img){
 // Produces a open image of the given frame
 // @Params: PImage frame
 // @Return: PImage open frame
-PImage opening(PImage img){
-   PImage erode = erosion(img);
-   PImage di = dilation(erode);
+PImage im_opening(PImage img){
+   PImage erode = im_erosion(img);
+   PImage di = im_dilation(erode);
    
    return di;
 }
@@ -69,16 +69,16 @@ PImage opening(PImage img){
 // Produces a closed image of the given frame
 // @Params: PImage frame
 // @Return: PImage closed frame
-PImage closing(PImage img){
-   PImage di = dilation(img);
-   PImage erode = erosion(di);
+PImage im_closing(PImage img){
+   PImage di = im_dilation(img);
+   PImage erode = im_erosion(di);
    return erode;
 }
 
 // Produces a erosion image of the given frame
 // @Params: PImage frame
 // @Return: PImage eroded frame
-PImage erosion(PImage img)
+PImage im_erosion(PImage img)
 {
  // Create a new PImage object to return the dialation.
  PImage img_corrected = new PImage(img.width, img.height);
@@ -138,7 +138,7 @@ PImage erosion(PImage img)
 // Produces a dialated image of the given frame
 // @Params: PImage frame
 // @Return: PImage dialated frame
-PImage dilation(PImage img)
+PImage im_dilation(PImage img)
 {
  // Create a new PImage object to return the dialation.
  PImage img_corrected = new PImage(img.width, img.height);
@@ -181,7 +181,7 @@ PImage dilation(PImage img)
 // Produces a binary image of the given frame
 // @Params: PImage frame
 // @Return: PImage binary frame
-PImage binaryimage(PImage img)
+PImage im_binary(PImage img)
 {
  PImage binary = new PImage(img.width, img.height);
  
