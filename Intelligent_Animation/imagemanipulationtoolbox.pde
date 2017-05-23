@@ -1,7 +1,7 @@
 //
 // Custom Image library written for COMP3419
 // @author: Cian Byrne
-// @modified: 21/05/2017
+// @modified: 23/05/2017
 //
 
 // Creates a grey scale image of a given frame

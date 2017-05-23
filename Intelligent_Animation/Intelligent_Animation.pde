@@ -15,6 +15,7 @@ PImage segmentedImg;
 PImage binaryImg;
 PImage improvedImg;
 int framenumber = 0;
+int BLOCKSIZE = 13;
 
 // Processing Set-up function.  This is run once.  All initial 
 //  parameters and settings are set here.
