@@ -146,7 +146,7 @@ PImage correctAndEnhance(PImage bin){
 // Determines where the location is.
 // @param: 
 // @return: 
-ArrayList findBlobs(PImage bin){
+void findBlobs(PImage bin){
    ArrayList<Blob> blobs = new ArrayList<Blob>(5);
    
    color white = color(255,255,255);
@@ -155,18 +155,22 @@ ArrayList findBlobs(PImage bin){
    
    boolean inBlob = false;
    
-   for ( x = 0; x < bin.width; x += jump ) {
-     for ( y = 0; x < bin.height; y += jump )  {
+   for ( x = 0; x < bin.width; x += jump ) 
+   {
+     for ( y = 0; x < bin.height; y += jump )  
+     {
        // calculate the location
        int loc = x + bin.width * y;
        inBlob = false;
        
        // check if the pixel is whtie, otherwise ignore
-       if ( bin.pixels[loc] == white ) {
+       if ( bin.pixels[loc] == white ) 
+       {
          
          // search all the blobs to determine if this point is within an
          //  existing blob.  Modify according to "Threshold Check".
-         for ( Blob b : blobs ) {
+         for ( Blob b : blobs ) 
+         {
            
            if (inBlob) { break; }
              
@@ -181,46 +185,44 @@ ArrayList findBlobs(PImage bin){
              //   ii) modify blob
              
              
-             if ( checkXTh(b, x, threshold) ) {
+             if ( checkXTh(b, x, threshold) ) 
+             {
                // if the "x" coordinate is within the threshold, then we need to check
                //  that the "Y" coordinate is also in it's bounds.  Otherwise
                //  we cannot include the point.
-               if ( checkYTh(b, y, threshold) ) {
+               if ( checkYTh(b, y, threshold) ) 
+               {
                  
                  // okey, this is where it gets tricky... we now know that this point
                  //  is within the "THRESHOLD BLOCK", but which way are we going to be expanding?
-                 if ( !checkX(b, x) ) {
+                 if ( !checkX(b, x) ) 
+                 {
                    // we need to work out which way on "x" we are expanding. 
-                   if ( x < b.leftx ) {
-                     b.leftx = x;
-                   } 
-                   else if ( x > b.rightx ) {
-                     b.rightx = x;
-                   }
+                   if ( x < b.leftx ) b.leftx = x;
+                   else if ( x > b.rightx ) b.rightx = x;
                  }
 
-                 if ( !checkY(b, y) ) {
+                 if ( !checkY(b, y) ) 
+                 {
                    // we need to work out which way on "y" we are expanding.
-                   if ( y < b.lefty ) {
-                     b.lefty = y;
-                   } 
-                   else if ( y > b.righty ) {
-                     b.righty = y;
-                   }
+                   if ( y < b.lefty ) b.lefty = y;
+                   else if ( y > b.righty ) b.righty = y;
                  }
                  
                  // break out, there is no need to check any of the other blobs
                  inBlob = true;
                     
                } // END IF checkYTh()
-               else{
+               else
+               {
                  // failed, outside of y threshold square - check next blob
                  // if it is not within the threshold, this point cannot be included.                 
                  continue;
                }
                
              } // END IF checkXTh()
-             else {
+             else 
+             {
                // failed, outside of x threshold square - check next blob
                // if it is not within the threshold, this point is not 
                //  going to be included on the y axis either.
@@ -238,14 +240,14 @@ ArrayList findBlobs(PImage bin){
    } // END FOR-X
    
    // return the blobs
-   return blobs;
+   //return blobs;
 } // END FUNCTION
 
 
 //
 // Blob checkers
 //
-boolean checkX(Blob b, x){
+boolean checkX(Blob b, int x){
    // now refine it to just inside the blob
    if ( x => b.leftx && x <= b.rightx ) {
      // inside blob, no action required
@@ -254,7 +256,7 @@ boolean checkX(Blob b, x){
    return false;
 }
 
-boolean checkXTh(Blob b, x, threshold){
+boolean checkXTh(Blob b, int x, int threshold){
    // if the "x" coordinate is in between the blobs extremities, then 
    //  we need to either, expand the blob or say everything is ok.
    // this statement checks if it is within the threshold as well.
@@ -264,7 +266,7 @@ boolean checkXTh(Blob b, x, threshold){
    return false; 
 }
 
-boolean checkY(Blob b, y){
+boolean checkY(Blob b, int y){
    // now refine it to just inside the blob
    if ( y => b.lefty && y <= b.righty ) {
      // inside blob, no action required
@@ -273,7 +275,7 @@ boolean checkY(Blob b, y){
    return false;
 }
 
-boolean checkYTh(Blob b, y, threshold){
+boolean checkYTh(Blob b, int y, int threshold){
    // if the "y" coordinate is in between the blobs extremities, then 
    //  we need to either, expand the blob or say everything is ok.
    // this statement checks if it is within the threshold as well.
