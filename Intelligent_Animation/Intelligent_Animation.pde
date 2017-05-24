@@ -208,20 +208,29 @@ void findBlobs(PImage bin){
                    }
                  }
                  
+                 // break out, there is no need to check any of the other blobs
+                 inBlob = true;
+                 break;
+                    
                }else{
-                 // failed, outside of y threshold square
+                 // failed, outside of y threshold square - check next blob
                  // if it is not within the threshold, this point cannot be included.                 
                  continue;
                }
                
              } else {
-               // failed, outside of x threshold square
+               // failed, outside of x threshold square - check next blob
                // if it is not within the threshold, this point is not 
                //  going to be included on the y axis either.
                //  disregard it and move on.
                continue;
              } // END X-MAIN
          } // END FOR BLOBS
+         
+         // IF the pixel is not in a pixel because it is outside the threshold or something,
+         //  then we need to add it to a new blob.
+         blobs.add(new Blob(x,y));
+           
        } // END IF-WHITE
      } // END FOR-Y
    } // END FOR-X
@@ -280,6 +289,8 @@ public class Blob {
     public Ball(tx, ty){
         int leftx = tx;
         int lefty = ty;
+        int rightx = tx+5;
+        int righty = ty+5;
     }
 }
 // FUNCTIONS FOR GENERATING MOVIE OBJECTS
