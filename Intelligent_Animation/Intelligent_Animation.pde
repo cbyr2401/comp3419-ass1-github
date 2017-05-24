@@ -59,17 +59,14 @@ void draw(){
   text("Segmented Image", 568+234, 300);
   
   // BOTTOM LEFT (3): draw the improved binary image
-  //boxes = drawBlobs(improvedImg);
+  boxes = drawBlobs(improvedImg);
   image(boxes, 0, 320);
   text("Displacement boxes", 234, 320+300);
   
   // BOTTOM RIGHT (4): draw the binary movie
   image(binaryImg, 568, 320);
   text("Binary Image", 568+234, 320+300);
-  
-  
-  
-  
+
   // export the whole image frame
   //saveFrame();
   
@@ -159,17 +156,20 @@ PGraphics drawBlobs(PImage bin){
    PGraphics field;
    field = createGraphics(bin.width, bin.height);
    
-   ArrayList<Blob> blobs = findBlobs(bin);  
+   ArrayList<Blob> bxs = findBlobs(bin);  
    
-   println("drawing blobs");
+   println("DEBUG: drawBlobs");
+
    field.beginDraw();
    field.stroke(255,255,255);
    
-   for ( Blob b : blobs ){
+   for ( Blob b : bxs ){
      field.rect(b.leftx, b.lefty, b.rightx, b.righty);
    }
    
    field.endDraw();
+   
+   println("finished drawing blobs to Graphic");
    return field;
 }
 
@@ -184,6 +184,8 @@ ArrayList findBlobs(PImage bin){
    int jump = 1;    // number of pixels to skip, looking at all of them will take a while.
    
    boolean inBlob = false;
+   
+   println("DEBUG for: findBlobs(binary image)");
    
    for ( int x = 0; x < bin.width; x += jump ) 
    {
@@ -202,7 +204,7 @@ ArrayList findBlobs(PImage bin){
          //  existing blob.  Modify according to "Threshold Check".
          for ( Blob b : blobs ) 
          {
-           
+           println("going through blobs: (" + x + "," + y + ")");
            if (inBlob) { break; }
              
              //   ~ Threshold Check ~
@@ -273,6 +275,7 @@ ArrayList findBlobs(PImage bin){
      } // END FOR-Y
    } // END FOR-X
    
+   println("finished finding blobs");
    // return the blobs
    return blobs;
 } // END FUNCTION
