@@ -167,6 +167,8 @@ ArrayList findBlobs(PImage bin){
          // search all the blobs to determine if this point is within an
          //  existing blob.  Modify according to "Threshold Check".
          for ( Blob b : blobs ) {
+           
+           if (inBlob) { break; }
              
              //   ~ Threshold Check ~
              //  1) x inside larger square
@@ -192,7 +194,7 @@ ArrayList findBlobs(PImage bin){
                    if ( x < b.leftx ) {
                      b.leftx = x;
                    } 
-                   else if (x > b.rightx) {
+                   else if ( x > b.rightx ) {
                      b.rightx = x;
                    }
                  }
@@ -202,22 +204,23 @@ ArrayList findBlobs(PImage bin){
                    if ( y < b.lefty ) {
                      b.lefty = y;
                    } 
-                   else if (y > b.righty) {
+                   else if ( y > b.righty ) {
                      b.righty = y;
                    }
                  }
                  
                  // break out, there is no need to check any of the other blobs
                  inBlob = true;
-                 break;
                     
-               }else{
+               } // END IF checkYTh()
+               else{
                  // failed, outside of y threshold square - check next blob
                  // if it is not within the threshold, this point cannot be included.                 
                  continue;
                }
                
-             } else {
+             } // END IF checkXTh()
+             else {
                // failed, outside of x threshold square - check next blob
                // if it is not within the threshold, this point is not 
                //  going to be included on the y axis either.
@@ -228,7 +231,7 @@ ArrayList findBlobs(PImage bin){
          
          // IF the pixel is not in a pixel because it is outside the threshold or something,
          //  then we need to add it to a new blob.
-         blobs.add(new Blob(x,y));
+         blobs.add( new Blob(x,y) );
            
        } // END IF-WHITE
      } // END FOR-Y
@@ -237,7 +240,6 @@ ArrayList findBlobs(PImage bin){
    // return the blobs
    return blobs;
 } // END FUNCTION
-
 
 
 //
@@ -288,7 +290,7 @@ public class Blob {
     public int rightx;
     public int righty;
     
-    public Ball(tx, ty){
+    public Blob(tx, ty){
         int leftx = tx;
         int lefty = ty;
         int rightx = tx+5;
