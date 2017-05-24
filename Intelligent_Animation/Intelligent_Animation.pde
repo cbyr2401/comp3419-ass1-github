@@ -146,21 +146,20 @@ PImage correctAndEnhance(PImage bin){
 // Determines where the location is.
 // @param: 
 // @return: 
-void findBlobs(PImage bin){
-   ArrayList<Blob> blobs = new ArrayList<Blob>();
+ArrayList findBlobs(PImage bin){
+   ArrayList<Blob> blobs = new ArrayList<Blob>(5);
    
    color white = color(255,255,255);
    int threshold = 25;  // number of pixels to be within a blob
    int jump = 0;    // number of pixels to skip, looking at all of them will take a while.
    
    boolean inBlob = false;
-   int tempx = 0;
-   int tempy = 0;
    
    for ( x = 0; x < bin.width; x += jump ) {
      for ( y = 0; x < bin.height; y += jump )  {
        // calculate the location
        int loc = x + bin.width * y;
+       inBlob = false;
        
        // check if the pixel is whtie, otherwise ignore
        if ( bin.pixels[loc] == white ) {
@@ -234,6 +233,9 @@ void findBlobs(PImage bin){
        } // END IF-WHITE
      } // END FOR-Y
    } // END FOR-X
+   
+   // return the blobs
+   return blobs;
 } // END FUNCTION
 
 
