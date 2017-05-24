@@ -15,6 +15,7 @@ PImage segmentedImg;
 PImage binaryImg;
 PImage improvedImg;
 PGraphics boxes;
+ArrayList<Blob> xyz;
 int framenumber = 0;
 int BLOCKSIZE = 13;
 
@@ -27,14 +28,14 @@ void setup(){
   originalMovie = new Movie(this, sketchPath("monkey.mov"));
 
   // stop the null pointer
-  segmentedImg = loadImage("blank.png");
+  //segmentedImg = loadImage("blank.png");
   
   // stop the null pointer
-  binaryImg = loadImage("blank.png");
+  //binaryImg = loadImage("blank.png");
   
-  improvedImg = loadImage("blank.png");
+  //improvedImg = loadImage("blank.png");
   
-  boxes = createGraphics(improvedImg.width,improvedImg.height);
+  //boxes = createGraphics(improvedImg.width,improvedImg.height);
   
   // play the original movie file
   originalMovie.play();
@@ -49,23 +50,36 @@ void draw(){
   // some debug text
   textSize(18);
   fill(255,0,0);
+  background(0); // clear
   
   // TOP LEFT (1): draw the original movie
   image(originalMovie, 0, 0);
   text("Original Movie File", 234, 300);
   
   // TOP RIGHT (2): draw the segmented movie
-  image(segmentedImg, 568, 0);
-  text("Segmented Image", 568+234, 300);
+  if ( segmentedImg != null ) {
+    image(segmentedImg, 568, 0);
+    text("Segmented Image", 568+234, 300);
+  }
   
   // BOTTOM LEFT (3): draw the improved binary image
-  boxes = drawBlobs(improvedImg);
-  image(boxes, 0, 320);
-  text("Displacement boxes", 234, 320+300);
+  if ( binaryImg != null ) {
+    //boxes = drawBlobs(improvedImg);
+    xyz = findBlobs(improvedImg);
+    
+    //image(boxes, 0, 320);
+    for ( Blob b : xyz ){
+       //println("Making box here: (" + b.leftx + "," + b.lefty + ") (" + b.rightx + "," + b.righty + ")");
+       rect(b.leftx, b.lefty+320, b.rightx, b.righty+320);
+    }
+    text("Displacement boxes", 234, 320+300);
+  }
   
   // BOTTOM RIGHT (4): draw the binary movie
-  image(binaryImg, 568, 320);
-  text("Binary Image", 568+234, 320+300);
+  if ( binaryImg != null ) {  
+    image(binaryImg, 568, 320);
+    text("Binary Image", 568+234, 320+300);
+  }
 
   // export the whole image frame
   //saveFrame();
@@ -161,13 +175,16 @@ PGraphics drawBlobs(PImage bin){
    println("DEBUG: drawBlobs");
 
    field.beginDraw();
-   field.stroke(255,255,255);
+   field.background(0);
+   field.stroke(255);
+   field.strokeWeight(5);
    
    for ( Blob b : bxs ){
+     println("Making box here: (" + b.leftx + "," + b.lefty + ") (" + b.rightx + "," + b.righty + ")");
      field.rect(b.leftx, b.lefty, b.rightx, b.righty);
    }
    
-   field.endDraw();
+   field.endDraw(); //<>//
    
    println("finished drawing blobs to Graphic");
    return field;
@@ -181,20 +198,22 @@ ArrayList findBlobs(PImage bin){
    
    color white = color(255,255,255);
    int threshold = 25;  // number of pixels to be within a blob
-   int jump = 1;    // number of pixels to skip, looking at all of them will take a while.
+   int jump = 5;    // number of pixels to skip, looking at all of them will take a while.
    
    boolean inBlob = false;
    
-   println("DEBUG for: findBlobs(binary image)");
+   println("DEBUG for: findBlobs(binary image)"); //<>//
    
-   for ( int x = 0; x < bin.width; x += jump ) 
+   for ( int y = 80; y < bin.height; y += jump ) 
    {
-     for ( int y = 0; y < bin.height; y += jump )  
+     for ( int x = 60; x < bin.width; x += jump )  
      {
        // calculate the location
        int loc = x + bin.width * y;
+       color c = bin.pixels[loc];
        inBlob = false;
        println("loc: (" + x + "," + y + ")");
+       println("colors: " + c + " | " + white + " | " + (c == white)  );
        
        // check if the pixel is whtie, otherwise ignore
        if ( bin.pixels[loc] == white ) 
@@ -268,8 +287,10 @@ ArrayList findBlobs(PImage bin){
          
          // IF the pixel is not in a pixel because it is outside the threshold or something,
          //  then we need to add it to a new blob.
-         blobs.add( new Blob(x,y) );
-         println("added new blob (" + blobs.size());
+         if ( !inBlob ) { 
+           blobs.add( new Blob(x,y) );
+           println("added new blob (" + blobs.size() + ") (" + x + "," + y + ")");
+         }
            
        } // END IF-WHITE
      } // END FOR-Y
@@ -330,10 +351,10 @@ public class Blob {
     public int righty;
     
     public Blob(int tx, int ty){
-        int leftx = tx;
-        int lefty = ty;
-        int rightx = tx+5;
-        int righty = ty+5;
+        leftx = tx;
+        lefty = ty;
+        rightx = tx+5;
+        righty = ty+5;
     }
 }
 // FUNCTIONS FOR GENERATING MOVIE OBJECTS
