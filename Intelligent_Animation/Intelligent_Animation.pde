@@ -34,7 +34,7 @@ void setup(){
   
   improvedImg = loadImage("blank.png");
   
-  boxes = createGraphics(improvedImg.width,improvedImg.height);
+  //boxes = createGraphics(improvedImg.width,improvedImg.height);
   
   // play the original movie file
   originalMovie.play();
@@ -63,8 +63,8 @@ void draw(){
   text("Binary Image", 568+284, 636);
   
   // draw the improved binary image to the bottom left box
-  boxes = drawBlobs(improvedImg);
-  image(boxes, 568, 0);
+  //boxes = drawBlobs(improvedImg);
+  //image(boxes, 568, 0);
   text("Displacement boxes", 568+284, 318);
   
   
@@ -159,16 +159,13 @@ PGraphics drawBlobs(PImage bin){
    
    ArrayList<Blob> blobs = findBlobs(bin);  
    
+   println("drawing blobs");
    field.beginDraw();
    field.stroke(255,255,255);
    
-   println("drawing blobs");
    for ( Blob b : blobs ){
      field.rect(b.leftx, b.lefty, b.rightx, b.righty);
    }
-   
-   println("waiting...");
-   delay(1000);
    
    field.endDraw();
    return field;
