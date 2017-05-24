@@ -34,7 +34,7 @@ void setup(){
   
   improvedImg = loadImage("blank.png");
   
-  //boxes = createGraphics(improvedImg.width,improvedImg.height);
+  boxes = createGraphics(improvedImg.width,improvedImg.height);
   
   // play the original movie file
   originalMovie.play();
@@ -50,22 +50,24 @@ void draw(){
   textSize(18);
   fill(255,0,0);
   
-  // draw the original movie to the top left box
+  // TOP LEFT (1): draw the original movie
   image(originalMovie, 0, 0);
-  text("Original Movie File", 284, 318);
+  text("Original Movie File", 234, 300);
   
-  // draw the segmented movie to the top right box
+  // TOP RIGHT (2): draw the segmented movie
   image(segmentedImg, 568, 0);
-  text("Segmented Image", 568+284, 318);
+  text("Segmented Image", 568+234, 300);
   
-  // draw the binary movie to the bottom right box
-  image(binaryImg, 568, 320);
-  text("Binary Image", 568+284, 636);
-  
-  // draw the improved binary image to the bottom left box
+  // BOTTOM LEFT (3): draw the improved binary image
   //boxes = drawBlobs(improvedImg);
-  //image(boxes, 568, 0);
-  text("Displacement boxes", 568+284, 318);
+  image(boxes, 0, 320);
+  text("Displacement boxes", 234, 320+300);
+  
+  // BOTTOM RIGHT (4): draw the binary movie
+  image(binaryImg, 568, 320);
+  text("Binary Image", 568+234, 320+300);
+  
+  
   
   
   // export the whole image frame
