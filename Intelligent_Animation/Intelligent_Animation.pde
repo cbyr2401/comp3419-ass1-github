@@ -14,6 +14,7 @@ Movie originalMovie;
 PImage segmentedImg;
 PImage binaryImg;
 PImage improvedImg;
+PGraphics boxes;
 int framenumber = 0;
 int BLOCKSIZE = 13;
 
@@ -32,6 +33,8 @@ void setup(){
   binaryImg = loadImage("blank.png");
   
   improvedImg = loadImage("blank.png");
+  
+  boxes = createGraphics(improvedImg.width,improvedImg.height);
   
   // play the original movie file
   originalMovie.play();
@@ -60,8 +63,10 @@ void draw(){
   text("Binary Image", 568+284, 636);
   
   // draw the improved binary image to the bottom left box
-  image(improvedImg, 568, 0);
-  text("Improved Image", 568+284, 318);
+  boxes = drawBlobs(improvedImg);
+  image(boxes, 568, 0);
+  text("Displacement boxes", 568+284, 318);
+  
   
   // export the whole image frame
   //saveFrame();
@@ -76,9 +81,10 @@ void movieEvent(Movie m) {
   segmentedImg = segmentMarkers(m, false);
   binaryImg = segmentMarkers(m, true);
   improvedImg = correctAndEnhance(binaryImg);
+  //boxes = drawBlobs(improvedImg);
   
   // save the frame
-  binaryImg.save(sketchPath("") + "binary/image" + nf(framenumber, 4) + ".tif");
+  //binaryImg.save(sketchPath("") + "binary/image" + nf(framenumber, 4) + ".tif");
   framenumber++;
 }
 
@@ -143,30 +149,56 @@ PImage correctAndEnhance(PImage bin){
   return improvement;
 }
 
+
 // Determines where the location is.
 // @param: 
 // @return: 
-void findBlobs(PImage bin){
+PGraphics drawBlobs(PImage bin){
+   PGraphics field;
+   field = createGraphics(bin.width, bin.height);
+   
+   ArrayList<Blob> blobs = findBlobs(bin);  
+   
+   field.beginDraw();
+   field.stroke(255,255,255);
+   
+   println("drawing blobs");
+   for ( Blob b : blobs ){
+     field.rect(b.leftx, b.lefty, b.rightx, b.righty);
+   }
+   
+   println("waiting...");
+   delay(1000);
+   
+   field.endDraw();
+   return field;
+}
+
+// Determines where the location is.
+// @param: 
+// @return: 
+ArrayList findBlobs(PImage bin){
    ArrayList<Blob> blobs = new ArrayList<Blob>(5);
    
    color white = color(255,255,255);
    int threshold = 25;  // number of pixels to be within a blob
-   int jump = 0;    // number of pixels to skip, looking at all of them will take a while.
+   int jump = 1;    // number of pixels to skip, looking at all of them will take a while.
    
    boolean inBlob = false;
    
-   for ( x = 0; x < bin.width; x += jump ) 
+   for ( int x = 0; x < bin.width; x += jump ) 
    {
-     for ( y = 0; x < bin.height; y += jump )  
+     for ( int y = 0; y < bin.height; y += jump )  
      {
        // calculate the location
        int loc = x + bin.width * y;
        inBlob = false;
+       println("loc: (" + x + "," + y + ")");
        
        // check if the pixel is whtie, otherwise ignore
        if ( bin.pixels[loc] == white ) 
        {
-         
+         println("**pixel is white");
          // search all the blobs to determine if this point is within an
          //  existing blob.  Modify according to "Threshold Check".
          for ( Blob b : blobs ) 
@@ -211,6 +243,8 @@ void findBlobs(PImage bin){
                  
                  // break out, there is no need to check any of the other blobs
                  inBlob = true;
+                 println("**added to blob");
+                 break;
                     
                } // END IF checkYTh()
                else
@@ -234,13 +268,14 @@ void findBlobs(PImage bin){
          // IF the pixel is not in a pixel because it is outside the threshold or something,
          //  then we need to add it to a new blob.
          blobs.add( new Blob(x,y) );
+         println("added new blob (" + blobs.size());
            
        } // END IF-WHITE
      } // END FOR-Y
    } // END FOR-X
    
    // return the blobs
-   //return blobs;
+   return blobs;
 } // END FUNCTION
 
 
@@ -249,7 +284,7 @@ void findBlobs(PImage bin){
 //
 boolean checkX(Blob b, int x){
    // now refine it to just inside the blob
-   if ( x => b.leftx && x <= b.rightx ) {
+   if ( x >= b.leftx && x <= b.rightx ) {
      // inside blob, no action required
      return true;
    }
@@ -260,7 +295,7 @@ boolean checkXTh(Blob b, int x, int threshold){
    // if the "x" coordinate is in between the blobs extremities, then 
    //  we need to either, expand the blob or say everything is ok.
    // this statement checks if it is within the threshold as well.
-   if ( x => b.leftx - threshold && x <= b.rightx + threshold ){
+   if ( x >= b.leftx - threshold && x <= b.rightx + threshold ){
      return true;
    }
    return false; 
@@ -268,7 +303,7 @@ boolean checkXTh(Blob b, int x, int threshold){
 
 boolean checkY(Blob b, int y){
    // now refine it to just inside the blob
-   if ( y => b.lefty && y <= b.righty ) {
+   if ( y >= b.lefty && y <= b.righty ) {
      // inside blob, no action required
      return true;
    }
@@ -279,7 +314,7 @@ boolean checkYTh(Blob b, int y, int threshold){
    // if the "y" coordinate is in between the blobs extremities, then 
    //  we need to either, expand the blob or say everything is ok.
    // this statement checks if it is within the threshold as well.
-   if ( y => b.lefty - threshold && y <= b.righty + threshold ){
+   if ( y >= b.lefty - threshold && y <= b.righty + threshold ){
      return true;
    }
    return false; 
@@ -292,7 +327,7 @@ public class Blob {
     public int rightx;
     public int righty;
     
-    public Blob(tx, ty){
+    public Blob(int tx, int ty){
         int leftx = tx;
         int lefty = ty;
         int rightx = tx+5;
