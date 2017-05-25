@@ -155,9 +155,10 @@ PImage correctAndEnhance(PImage bin){
   PImage improvement = new PImage(bin.width, bin.height);
   
   // first erode all the small bits
-  improvement = im_erosion(bin);
-  // close image
-  improvement = im_closing(improvement);
+  for ( int i = 0; i < 3; i++) improvement = im_erosion(bin);
+  
+  // dilate image many times
+  for ( int i = 0; i < 7; i++) improvement = im_dilation(improvement);
 
   return improvement;
 }
