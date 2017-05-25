@@ -76,12 +76,13 @@ PImage im_closing(PImage img){
 }
 
 // Produces a erosion image of the given frame
+// WARNING:  Changes original file.
 // @Params: PImage frame
 // @Return: PImage eroded frame
 PImage im_erosion(PImage img)
 {
  // Create a new PImage object to return the dialation.
- PImage img_corrected = new PImage(img.width, img.height);
+ //PImage img_corrected = new PImage(img.width, img.height);
  
  // Initialise variables
  color white = color(255,255,255);
@@ -125,23 +126,24 @@ PImage im_erosion(PImage img)
      
      // insert into image...
      if(yes){
-       img_corrected.pixels[j + i*img.width] = white;
+       img.pixels[j + i*img.width] = white;
      }else{
-       img_corrected.pixels[j + i*img.width] = black;
+       img.pixels[j + i*img.width] = black;
      }   
    }
  }
- return img_corrected;  
+ return img;  
 }
 
 
 // Produces a dialated image of the given frame
+// WARNING:  Changes original file.
 // @Params: PImage frame
 // @Return: PImage dialated frame
 PImage im_dilation(PImage img)
 {
  // Create a new PImage object to return the dialation.
- PImage img_corrected = new PImage(img.width, img.height);
+ //PImage img_corrected = new PImage(img.width, img.height);
  
  // Initialise variables
  color white = color(255,255,255);
@@ -168,13 +170,13 @@ PImage im_dilation(PImage img)
      
      // insert into image...
      if(yes){
-       img_corrected.pixels[j + i*img.width] = white;
+       img.pixels[j + i*img.width] = white;
      }else{
-       img_corrected.pixels[j + i*img.width] = black;
+       img.pixels[j + i*img.width] = black;
      }   
    }
  }
- return img_corrected;  
+ return img;  
 }
 
 
