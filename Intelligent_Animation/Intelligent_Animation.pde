@@ -165,29 +165,31 @@ PImage correctAndEnhance(PImage bin){
 
 
 // Determines where the location is.
-// @param: 
-// @return: 
+// @param: enhanced binary image
+// @return: PGraphic with blobs on it
 PGraphics drawBlobs(PImage bin){
+   // set up a new PGraphic for temporarily dumping the blobs on.
    PGraphics field;
    field = createGraphics(bin.width, bin.height);
    
-   ArrayList<Blob> bxs = findBlobs(bin);  
-   
-   println("DEBUG: drawBlobs");
+   // get the blobs
+   ArrayList<Blob> blbs = findBlobs(bin);  
 
+   // set up the field.
    field.beginDraw();
    field.background(0);
-   field.stroke(255);
-   field.strokeWeight(5);
+   field.fill(255,0,0);
    
-   for ( Blob b : bxs ){
-     println("Making box here: (" + b.minx + "," + b.maxy + ") (" + b.maxx + "," + b.miny + ")");
-     field.rect(b.minx, b.maxy, b.maxx, b.miny);
-   }
+   // set the method that Processing needs to use for drawing the objects.
+   field.rectMode(CORNERS);
    
+   // go through all the blobs and draw them to the PGraphic
+   for ( Blob b : blbs ) field.rect(b.minx, b.maxy, b.maxx, b.miny);
+
+   // close the object
    field.endDraw();
    
-   println("finished drawing blobs to Graphic");
+   // Return PGraphic object.
    return field;
 } //<>//
 
