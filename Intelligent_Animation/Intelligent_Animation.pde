@@ -303,42 +303,82 @@ ArrayList findBlobs(PImage bin){
 } // END FUNCTION
 
 
+// Checks if any generated blobs overlap and removes them.
+// @param: ArrayList of blobs
+// @return: void
+void checkBlobs(ArrayList<Blob> list){
+  // create temporary data store for items to remove.
+  ArrayList<Blob> removal = new ArrayList<Blob>();
+  
+  // go through all elements twice, checking if there is an overlap.
+  for ( Blob a : list ){
+    for ( Blob b : list ){
+      if (a == b )
+      {
+        // do not check same elements
+      }
+      else 
+      {
+          // check for overlaps, add to removal set if 
+          //  there is an overlap.
+          if ( a.isInside(b) ) removal.add(b);
+      }
+    }
+  }
+  
+  // remove all items from removal set.
+  if(removal.size() > 0) list.removeAll(removal);
+}
+
+
 //
 // Blob checkers
 //
+// Returns if the point lies within the x boundaries
+// @param: Blob object, int coordinate
+// @return: boolean
 boolean checkX(Blob b, int x){
    // now refine it to just inside the blob
-   if ( x >= b.leftx && x <= b.rightx ) {
+   if ( x >= b.minx && x <= b.maxx ) {
      // inside blob, no action required
      return true;
    }
    return false;
 }
 
+// Returns if the point lies within the x threshold boundaries
+// @param: Blob object, int coordinate
+// @return: boolean
 boolean checkXTh(Blob b, int x, int threshold){
    // if the "x" coordinate is in between the blobs extremities, then 
    //  we need to either, expand the blob or say everything is ok.
    // this statement checks if it is within the threshold as well.
-   if ( x >= b.leftx - threshold && x <= b.rightx + threshold ){
+   if ( x >= b.minx - threshold && x <= b.maxx + threshold ){
      return true;
    }
    return false; 
 }
 
+// Returns if the point lies within the y boundaries
+// @param: Blob object, int coordinate
+// @return: boolean
 boolean checkY(Blob b, int y){
    // now refine it to just inside the blob
-   if ( y >= b.lefty && y <= b.righty ) {
+   if ( y >= b.miny && y <= b.maxy ) {
      // inside blob, no action required
      return true;
    }
    return false;
 }
 
+// Returns if the point lies within the y threshold boundaries
+// @param: Blob object, int coordinate
+// @return: boolean
 boolean checkYTh(Blob b, int y, int threshold){
    // if the "y" coordinate is in between the blobs extremities, then 
    //  we need to either, expand the blob or say everything is ok.
    // this statement checks if it is within the threshold as well.
-   if ( y >= b.lefty - threshold && y <= b.righty + threshold ){
+   if ( y >= b.miny - threshold && y <= b.maxy + threshold ){
      return true;
    }
    return false; 
@@ -346,16 +386,30 @@ boolean checkYTh(Blob b, int y, int threshold){
 
 
 public class Blob {
-    public int leftx;
-    public int lefty;
-    public int rightx;
-    public int righty;
+    public int minx;
+    public int maxy;
+    public int maxx;
+    public int miny;
     
     public Blob(int tx, int ty){
-        leftx = tx;
-        lefty = ty;
-        rightx = tx+5;
-        righty = ty+5;
+        minx = tx;
+        maxy = ty;
+        maxx = tx+5;
+        miny = ty-5;
+    }
+    
+    // Returns a string with details about the Blob
+    public String display(){
+      return "Blob: (" + minx + "," + maxy + ") (" + maxx + "," + miny + ")";
+    }
+    
+    // Returns if the given blob is inside this.
+    public boolean isInside(Blob b){
+        if(b.maxx < maxx && b.maxx > minx &&
+           b.minx < maxx && b.minx > minx &&
+           b.maxy < maxy && b.maxy > miny &&
+           b.miny < maxy && b.miny > miny) return true;
+        else return false;
     }
 }
 // FUNCTIONS FOR GENERATING MOVIE OBJECTS
