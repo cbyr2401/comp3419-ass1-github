@@ -192,41 +192,34 @@ PGraphics drawBlobs(PImage bin){
 }
 
 // Determines where the location is.
-// @param: 
-// @return: 
+// @param: PImage enhanced binary
+// @return: ArrayList of blobs
 ArrayList findBlobs(PImage bin){
    ArrayList<Blob> blobs = new ArrayList<Blob>(5);
    
-   color white = color(255,255,255);
-   int threshold = 25;  // number of pixels to be within a blob
-   int jump = 5;    // number of pixels to skip, looking at all of them will take a while.
+   color white = color(255,255,255);  // convience.
+   int threshold = 9;  // number of pixels to be within a blob
+   int jump = 2;    // number of pixels to skip, looking at all of them will take a while.
    
    boolean inBlob = false;
    
-   println("DEBUG for: findBlobs(binary image)"); //<>//
-   
-   for ( int y = 80; y < bin.height; y += jump ) 
+   // go through all the pixels in the binary image and decide where which
+   //  'blob' it should belong to.
+   for ( int y = 0; y < bin.height; y += jump ) 
    {
-     for ( int x = 60; x < bin.width; x += jump )  
-     {
-       // calculate the location
-       int loc = x + bin.width * y;
-       color c = bin.pixels[loc];
+     for ( int x = 0; x < bin.width; x += jump )  
+     {      
+       // reset variables for each round.
        inBlob = false;
-       println("loc: (" + x + "," + y + ")");
-       println("colors: " + c + " | " + white + " | " + (c == white)  );
        
-       // check if the pixel is whtie, otherwise ignore
-       if ( bin.pixels[loc] == white ) 
+       // check if the pixel is white, otherwise ignore
+       if ( bin.pixels[x + bin.width * y] == white ) 
        {
-         println("**pixel is white");
          // search all the blobs to determine if this point is within an
          //  existing blob.  Modify according to "Threshold Check".
          for ( Blob b : blobs ) 
          {
-           println("going through blobs: (" + x + "," + y + ")");
-           if (inBlob) { break; }
-             
+           if (inBlob) { break; }  
              //   ~ Threshold Check ~
              //  1) x inside larger square
              //  2) y inside larger square
@@ -236,7 +229,6 @@ ArrayList findBlobs(PImage bin){
              //  4) y not inside smaller square
              //    i) expand direction
              //   ii) modify blob
-             
              
              if ( checkXTh(b, x, threshold) ) 
              {
@@ -251,27 +243,26 @@ ArrayList findBlobs(PImage bin){
                  if ( !checkX(b, x) ) 
                  {
                    // we need to work out which way on "x" we are expanding. 
-                   if ( x < b.leftx ) b.leftx = x;
-                   else if ( x > b.rightx ) b.rightx = x;
+                   if ( x < b.minx ) b.minx = x;
+                   else if ( x > b.maxx ) b.maxx = x;
                  }
 
                  if ( !checkY(b, y) ) 
                  {
                    // we need to work out which way on "y" we are expanding.
-                   if ( y < b.lefty ) b.lefty = y;
-                   else if ( y > b.righty ) b.righty = y;
+                   if ( y < b.miny ) b.miny = y;
+                   else if ( y > b.maxy ) b.maxy = y;
                  }
                  
                  // break out, there is no need to check any of the other blobs
                  inBlob = true;
-                 println("**added to blob");
                  break;
                     
                } // END IF checkYTh()
                else
                {
                  // failed, outside of y threshold square - check next blob
-                 // if it is not within the threshold, this point cannot be included.                 
+                 // if it is not within the threshold, this point cannot be included.
                  continue;
                }
                
@@ -290,17 +281,18 @@ ArrayList findBlobs(PImage bin){
          //  then we need to add it to a new blob.
          if ( !inBlob ) { 
            blobs.add( new Blob(x,y) );
-           println("added new blob (" + blobs.size() + ") (" + x + "," + y + ")");
          }
            
        } // END IF-WHITE
      } // END FOR-Y
    } // END FOR-X
    
-   println("finished finding blobs");
+   // check that none of the blobs overlap, this could cause problems later.
+   checkBlobs(blobs);
+   
    // return the blobs
    return blobs;
-} // END FUNCTION
+} // END FUNCTION //<>//
 
 
 // Checks if any generated blobs overlap and removes them.
