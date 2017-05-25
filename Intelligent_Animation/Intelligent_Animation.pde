@@ -181,15 +181,15 @@ PGraphics drawBlobs(PImage bin){
    field.strokeWeight(5);
    
    for ( Blob b : bxs ){
-     println("Making box here: (" + b.leftx + "," + b.lefty + ") (" + b.rightx + "," + b.righty + ")");
-     field.rect(b.leftx, b.lefty, b.rightx, b.righty);
+     println("Making box here: (" + b.minx + "," + b.maxy + ") (" + b.maxx + "," + b.miny + ")");
+     field.rect(b.minx, b.maxy, b.maxx, b.miny);
    }
    
-   field.endDraw(); //<>//
+   field.endDraw();
    
    println("finished drawing blobs to Graphic");
    return field;
-}
+} //<>//
 
 // Determines where the location is.
 // @param: PImage enhanced binary
