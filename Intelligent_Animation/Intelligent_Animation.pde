@@ -149,10 +149,10 @@ PImage correctAndEnhance(PImage bin){
   PImage improvement = new PImage(bin.width, bin.height);
   
   // first erode all the small bits
-  for ( int i = 0; i < 3; i++) improvement = im_erosion(bin);
+  for ( int i = 0; i < 5; i++) improvement = im_erosion(bin);
   
   // dilate image many times
-  for ( int i = 0; i < 7; i++) improvement = im_dilation(improvement);
+  for ( int i = 0; i < 8; i++) improvement = im_dilation(improvement);
 
   return improvement;
 }
@@ -393,10 +393,10 @@ public class Blob {
     
     // Returns if the given blob is inside this.
     public boolean isInside(Blob b){
-        if(b.maxx < maxx && b.maxx > minx &&
-           b.minx < maxx && b.minx > minx &&
-           b.maxy < maxy && b.maxy > miny &&
-           b.miny < maxy && b.miny > miny) return true;
+        if(b.maxx <= maxx && b.maxx >= minx &&
+           b.minx <= maxx && b.minx >= minx &&
+           b.maxy <= maxy && b.maxy >= miny &&
+           b.miny <= maxy && b.miny >= miny) return true;
         else return false;
     }
 }
