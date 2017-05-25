@@ -64,19 +64,20 @@ void draw(){
   // BOTTOM LEFT (3): draw the improved binary image
   if ( improvedImg != null ) {
     //boxes = drawBlobs(improvedImg);
-    xyz = findBlobs(improvedImg);
-    
+    //xyz = findBlobs(improvedImg);
+    boxes = drawBlobs(improvedImg);
+    image(boxes, 0, 0);
     //image(boxes, 0, 320);
-    rectMode(CORNERS);
-    textSize(16);
-    int count = 1;
-    for ( Blob b : xyz ){
-       fill(255,0,0);
-       rect(b.minx, b.maxy, b.maxx, b.miny);
-       fill(255,255,255);
-       text(str(count), b.minx, b.miny);
-       count++;
-    }
+    //rectMode(CORNERS);
+    //textSize(16);
+    //int count = 1;
+    //for ( Blob b : xyz ){
+    //   fill(255,0,0);
+    //   rect(b.minx, b.maxy, b.maxx, b.miny);
+    //   fill(255,255,255);
+    //   text(str(count), b.minx, b.miny);
+    //   count++;
+    //}
     text("Displacement boxes", 234, 320+300);
   }
   
@@ -116,15 +117,15 @@ PImage correctAndEnhance(PImage bin){
 
 
 // Determines where the location is.
-// @param: 
-// @return: 
+// @param: enhanced binary image
+// @return: PGraphic with blobs on it
 PGraphics drawBlobs(PImage bin){
    // set up a new PGraphic for temporarily dumping the blobs on.
    PGraphics field;
    field = createGraphics(bin.width, bin.height);
    
    // get the blobs
-   ArrayList<Blob> bxs = findBlobs(bin);  
+   ArrayList<Blob> blbs = findBlobs(bin);  
 
    // set up the field.
    field.beginDraw();
@@ -135,7 +136,7 @@ PGraphics drawBlobs(PImage bin){
    field.rectMode(CORNERS);
    
    // go through all the blobs and draw them to the PGraphic
-   for ( Blob b : xyz ) field.rect(b.minx, b.maxy, b.maxx, b.miny);
+   for ( Blob b : blbs ) field.rect(b.minx, b.maxy, b.maxx, b.miny);
 
    // close the object
    field.endDraw();
