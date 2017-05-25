@@ -119,26 +119,30 @@ PImage correctAndEnhance(PImage bin){
 // @param: 
 // @return: 
 PGraphics drawBlobs(PImage bin){
+   // set up a new PGraphic for temporarily dumping the blobs on.
    PGraphics field;
    field = createGraphics(bin.width, bin.height);
    
+   // get the blobs
    ArrayList<Blob> bxs = findBlobs(bin);  
    
-   println("DEBUG: drawBlobs");
-
+   // set the method that Processing needs to use for drawing the objects.
+   
+   
+   //textSize(16);  // DEBUG ONLY.
+   //int count = 1; // DEBUG ONLY.
+   // go through all the blobs and draw them to the PGraphic
    field.beginDraw();
    field.background(0);
-   field.stroke(255);
-   field.strokeWeight(5);
-   
-   for ( Blob b : bxs ){
-     println("Making box here: (" + b.minx + "," + b.maxy + ") (" + b.maxx + "," + b.miny + ")");
-     field.rect(b.minx, b.maxy, b.maxx, b.miny);
-   }
-   
+   field.fill(255,0,0);
+   field.rectMode(CORNERS);
+   for ( Blob b : xyz ) field.rect(b.minx, b.maxy, b.maxx, b.miny);
+    //fill(255,255,255); // DEBUG ONLY.
+       //text(str(count), b.minx, b.miny); // DEBUG ONLY.
+       //count++; // DEBUG ONLY
+   // close the object
    field.endDraw();
-   
-   println("finished drawing blobs to Graphic");
+   // Return PGraphic object.
    return field;
 }
 
