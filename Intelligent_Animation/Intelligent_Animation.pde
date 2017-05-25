@@ -63,22 +63,16 @@ void draw(){
   }
   
   // BOTTOM LEFT (3): draw the improved binary image
-  if ( binaryImg != null ) {
-    //boxes = drawBlobs(improvedImg);
-    xyz = findBlobs(improvedImg);
-    
-    //image(boxes, 0, 320);
-    for ( Blob b : xyz ){
-       //println("Making box here: (" + b.leftx + "," + b.lefty + ") (" + b.rightx + "," + b.righty + ")");
-       rect(b.leftx, b.lefty+320, b.rightx, b.righty+320);
-    }
+  if ( improvedImg != null ) {
+    boxes = drawBlobs(improvedImg);
+    image(boxes, 0, 320);
     text("Displacement boxes", 234, 320+300);
   }
   
   // BOTTOM RIGHT (4): draw the binary movie
-  if ( binaryImg != null ) {  
-    image(binaryImg, 568, 320);
-    text("Binary Image", 568+234, 320+300);
+  if ( improvedImg != null ) {  
+    image(improvedImg, 568, 320);
+    text("Improved Binary Image", 568+234, 320+300);
   }
 
   // export the whole image frame

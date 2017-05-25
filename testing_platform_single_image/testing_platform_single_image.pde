@@ -99,7 +99,6 @@ void draw(){
 
 
 
-
 // Improves the segemented image by removing artifacts
 // @param: PImage binary image
 // @return: PImage improveed frame
