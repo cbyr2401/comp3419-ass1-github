@@ -22,18 +22,10 @@ int BLOCKSIZE = 13;
 // Processing Set-up function.  This is run once.  All initial 
 //  parameters and settings are set here.
 void setup(){
-  size(1136,640);  // the size of the window to be rendered.
+  size(1704,960);  // the size of the window to be rendered.
   
   // the original un-modified file that we are importing to processing
   originalMovie = new Movie(this, sketchPath("monkey.mov"));
-
-  // stop the null pointer
-  //segmentedImg = loadImage("blank.png");
-  
-  // stop the null pointer
-  //binaryImg = loadImage("blank.png");
-  
-  //improvedImg = loadImage("blank.png");
   
   //boxes = createGraphics(improvedImg.width,improvedImg.height);
   
@@ -85,6 +77,7 @@ void draw(){
 //  new frame is available to read for the playing movie.
 void movieEvent(Movie m) {
   m.read();
+  
   segmentedImg = segmentMarkers(m, false);
   binaryImg = segmentMarkers(m, true);
   improvedImg = correctAndEnhance(binaryImg);
@@ -149,7 +142,8 @@ PImage correctAndEnhance(PImage bin){
   PImage improvement = new PImage(bin.width, bin.height);
   
   // first erode all the small bits
-  for ( int i = 0; i < 5; i++) improvement = im_erosion(bin);
+  improvement = im_erosion(bin);
+  for ( int i = 0; i < 0; i++) improvement = im_erosion(improvement);
   
   // dilate image many times
   for ( int i = 0; i < 8; i++) improvement = im_dilation(improvement);
