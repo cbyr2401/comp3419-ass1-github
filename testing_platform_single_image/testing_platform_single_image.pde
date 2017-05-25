@@ -67,9 +67,17 @@ void draw(){
     xyz = findBlobs(improvedImg);
     
     //image(boxes, 0, 320);
+    rectMode(CORNERS);
+    textSize(16);
+    int count = 1;
     for ( Blob b : xyz ){
        //println("Making box here: (" + b.minx + "," + b.maxy + ") (" + b.maxx + "," + b.miny + ")");
-       rect(b.minx, b.maxy, b.maxx, b.miny);
+       //stroke(255,255,255);
+       fill(255,0,0);
+       rect(b.minx, b.miny, b.maxx, b.maxy);
+       fill(255,255,255);
+       text(str(count), b.minx, b.miny);
+       count++;
     }
     text("Displacement boxes", 234, 320+300);
   }
@@ -101,8 +109,18 @@ PImage correctAndEnhance(PImage bin){
   
   // first erode all the small bits
   improvement = im_erosion(bin);
+  improvement = im_erosion(bin);
+  improvement = im_erosion(bin);
   // close image
-  improvement = im_closing(improvement);
+  improvement = im_dilation(improvement);
+  improvement = im_dilation(improvement);
+  improvement = im_dilation(improvement);
+  improvement = im_dilation(improvement);
+  improvement = im_dilation(improvement);
+  improvement = im_dilation(improvement);
+  improvement = im_dilation(improvement);
+  //improvement = im_closing(improvement);
+  
 
   return improvement;
 }
@@ -135,42 +153,65 @@ PGraphics drawBlobs(PImage bin){
    return field;
 }
 
+// Checks if any generated blobs overlap and removes them.
+// @param: ArrayList of blobs
+// @return: void
+void checkBlobs(ArrayList<Blob> list){
+  // create temporary data store for items to remove.
+  ArrayList<Blob> removal = new ArrayList<Blob>();
+  
+  // go through all elements twice, checking if there is an overlap.
+  for ( Blob a : list ){
+    for ( Blob b : list ){
+      if (a == b )
+      {
+        // do not check same elements
+      }
+      else 
+      {
+          // check for overlaps, add to removal set if 
+          //  there is an overlap.
+          if ( a.isInside(b) ) removal.add(b);
+      }
+    }
+  }
+  
+  // remove all items from removal set.
+  if(removal.size() > 0) list.removeAll(removal);
+}
+
+
 // Determines where the location is.
-// @param: 
-// @return: 
+// @param: PImage enhanced binary
+// @return: ArrayList of blobs
 ArrayList findBlobs(PImage bin){
    ArrayList<Blob> blobs = new ArrayList<Blob>(5);
    
-   color white = color(255,255,255);
-   int threshold = 50;  // number of pixels to be within a blob
+   color white = color(255,255,255);  // convience.
+   int threshold = 9;  // number of pixels to be within a blob
    int jump = 2;    // number of pixels to skip, looking at all of them will take a while.
    
    boolean inBlob = false;
+   boolean isChanged = false;
    
-   println("DEBUG for: findBlobs(binary image)");
-   
-   for ( int y = 80; y < bin.height; y += jump ) 
+   // go through all the pixels in the binary image and decide where which
+   //  'blob' it should belong to.
+   for ( int y = 0; y < bin.height; y += jump ) 
    {
-     for ( int x = 60; x < bin.width; x += jump )  
-     {
-       // calculate the location
-       int loc = x + bin.width * y;
-       color c = bin.pixels[loc];
+     for ( int x = 0; x < bin.width; x += jump )  
+     {      
+       // reset variables for each round.
        inBlob = false;
-       println("loc: (" + x + "," + y + ")");
-       println("colors: " + c + " | " + white + " | " + (c == white)  );
+       isChanged = false;
        
-       // check if the pixel is whtie, otherwise ignore
-       if ( bin.pixels[loc] == white ) 
+       // check if the pixel is white, otherwise ignore
+       if ( bin.pixels[x + bin.width * y] == white ) 
        {
-         println("**pixel is white");
          // search all the blobs to determine if this point is within an
          //  existing blob.  Modify according to "Threshold Check".
          for ( Blob b : blobs ) 
          {
-           println("going through blobs: At: (" + x + "," + y + ") | " + b.display());
-           if (inBlob) { break; }
-             
+           if (inBlob) { break; }  
              //   ~ Threshold Check ~
              //  1) x inside larger square
              //  2) y inside larger square
@@ -181,34 +222,54 @@ ArrayList findBlobs(PImage bin){
              //    i) expand direction
              //   ii) modify blob
              
-             
-             if ( checkXTh(b, x, threshold) ) 
+             if ( checkXTh(b, x, threshold) )  //<>//
              {
                // if the "x" coordinate is within the threshold, then we need to check
                //  that the "Y" coordinate is also in it's bounds.  Otherwise
                //  we cannot include the point.
-               if ( checkYTh(b, y, threshold) ) 
+               if ( checkYTh(b, y, threshold) )  //<>//
                {
                  
                  // okey, this is where it gets tricky... we now know that this point
                  //  is within the "THRESHOLD BLOCK", but which way are we going to be expanding?
-                 if ( !checkX(b, x) ) 
+                 if ( !checkX(b, x) )  //<>//
                  {
                    // we need to work out which way on "x" we are expanding. 
-                   if ( x < b.minx ) b.minx = x;
-                   else if ( x > b.maxx ) b.maxx = x;
+                   if ( x < b.minx ) 
+                   {
+                     b.minx = x;
+                     println("state: minx");
+                     isChanged = true;
+                   }
+                   else if ( x > b.maxx ) 
+                   {
+                     b.maxx = x;
+                     println("state: maxx");
+                     isChanged = true;
+                   }
                  }
 
-                 if ( !checkY(b, y) ) 
+                 if ( !checkY(b, y) )  //<>//
                  {
                    // we need to work out which way on "y" we are expanding.
-                   if ( y > b.maxy ) b.maxy = y;
-                   else if ( y < b.miny ) b.miny = y;
+                   if ( y < b.miny ) 
+                   {
+                     b.miny = y;
+                     println("state: miny");
+                     isChanged = true;
+                   }
+                   else if ( y > b.maxy ) 
+                   {
+                     b.maxy = y;
+                     println("state: maxy");
+                     isChanged = true;
+                   }
                  }
                  
                  // break out, there is no need to check any of the other blobs
-                 inBlob = true;
-                 println("**found a member blob" + b.display());
+                 inBlob = true; //<>//
+                 if ( !isChanged ) println("**found a member blob" + b.display());
+                 else println("**updated a member blob" + b.display());
                  break;
                     
                } // END IF checkYTh()
@@ -216,6 +277,7 @@ ArrayList findBlobs(PImage bin){
                {
                  // failed, outside of y threshold square - check next blob
                  // if it is not within the threshold, this point cannot be included.                 
+                 println("outside of y threshold");
                  continue;
                }
                
@@ -226,6 +288,7 @@ ArrayList findBlobs(PImage bin){
                // if it is not within the threshold, this point is not 
                //  going to be included on the y axis either.
                //  disregard it and move on.
+               println("outside of x threshold");
                continue;
              } // END X-MAIN
          } // END FOR BLOBS
@@ -242,6 +305,8 @@ ArrayList findBlobs(PImage bin){
    } // END FOR-X
    
    println("finished finding blobs");
+   checkBlobs(blobs);
+   println("finished destroying blobs");
    // return the blobs
    return blobs;
 } // END FUNCTION
@@ -274,7 +339,7 @@ boolean checkXTh(Blob b, int x, int threshold){
 // Returns if the point lies within the y boundaries
 boolean checkY(Blob b, int y){
    // now refine it to just inside the blob
-   if ( y <= b.maxy && y >= b.miny ) {
+   if ( y >= b.miny && y <= b.maxy ) {
      // inside blob, no action required
      return true;
    }
@@ -286,7 +351,7 @@ boolean checkYTh(Blob b, int y, int threshold){
    // if the "y" coordinate is in between the blobs extremities, then 
    //  we need to either, expand the blob or say everything is ok.
    // this statement checks if it is within the threshold as well.
-   if ( y <= b.maxy - threshold && y >= b.miny + threshold ){
+   if ( y >= b.miny - threshold && y <= b.maxy + threshold ){
      return true;
    }
    return false; 
@@ -303,10 +368,40 @@ public class Blob {
         minx = tx;
         maxy = ty;
         maxx = tx+5;
-        miny = ty+5;
+        miny = ty-5;
     }
     
     public String display(){
       return "Blob: (" + minx + "," + maxy + ") (" + maxx + "," + miny + ")";
+    }
+    
+    public boolean isInside(Blob b){
+        //if(maxx >= b.maxx && minx <= b.minx &&
+        //    maxy <= b.maxy && miny >= miny) 
+        //println(display());
+        //println(b.display());
+        //println("expressions");
+        //println("x");
+        //println(b.maxx < maxx);
+        //println(b.maxx > minx);
+        //println(b.minx < maxx);
+        //println(b.minx > minx);
+        //println("y");
+        //println(b.maxy < maxy);
+        //println(b.maxy > miny);
+        //println(b.miny < maxy);
+        //println(b.miny > miny);    
+        //println("end expressions");
+        if(b.maxx < maxx && b.maxx > minx &&
+           b.minx < maxx && b.minx > minx &&
+           b.maxy < maxy && b.maxy > miny &&
+           b.miny < maxy && b.miny > miny)
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
     }
 }
