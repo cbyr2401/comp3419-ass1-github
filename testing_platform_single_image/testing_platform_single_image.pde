@@ -125,23 +125,21 @@ PGraphics drawBlobs(PImage bin){
    
    // get the blobs
    ArrayList<Blob> bxs = findBlobs(bin);  
-   
-   // set the method that Processing needs to use for drawing the objects.
-   
-   
-   //textSize(16);  // DEBUG ONLY.
-   //int count = 1; // DEBUG ONLY.
-   // go through all the blobs and draw them to the PGraphic
+
+   // set up the field.
    field.beginDraw();
    field.background(0);
    field.fill(255,0,0);
+   
+   // set the method that Processing needs to use for drawing the objects.
    field.rectMode(CORNERS);
+   
+   // go through all the blobs and draw them to the PGraphic
    for ( Blob b : xyz ) field.rect(b.minx, b.maxy, b.maxx, b.miny);
-    //fill(255,255,255); // DEBUG ONLY.
-       //text(str(count), b.minx, b.miny); // DEBUG ONLY.
-       //count++; // DEBUG ONLY
+
    // close the object
    field.endDraw();
+   
    // Return PGraphic object.
    return field;
 }
