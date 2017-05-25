@@ -33,7 +33,7 @@ void setup(){
   
   // use only one PGraphics object throughout the whole execution to save memory
   boxes = createGraphics(GLOBAL_WIDTH, GLOBAL_HEIGHT);
-  //dots = createGraphics(GLOBAL_WIDTH, GLOBAL_HEIGHT);
+  dots = createGraphics(GLOBAL_WIDTH, GLOBAL_HEIGHT);
   
   // play the original movie file
   originalMovie.play();
@@ -63,30 +63,31 @@ void draw(){
   // TOP RIGHT (3): draw the binary image
   if ( binaryImg != null ) {
     image(binaryImg, 1136, 0);
-    text("Segmented Image", 1136+234, 300);
+    text("Binary Image", 1136+234, 300);
   }
   
   // BOTTOM LEFT (4): draw the improved binary image
   if ( improvedImg != null ) {  
     image(improvedImg, 0, 320);
-    text("Improved Binary Image", 568+234, 320+300);
+    text("Improved Binary Image", 234, 320+300);
   }
   
   // BOTTOM CENTER (5): draw the boxes
     if ( improvedImg != null ) {
     drawBlobs(improvedImg);
     image(boxes, 568, 320);
-    text("Displacement boxes", 234, 320+300);
+    text("Displacement boxes", 568+234, 320+300);
   }
   
   // BOTTOM RIGHT (6): draw the dots
-  if ( improvedImg != null ) {  
-    //image(improvedImg, 1136, 320);
-    text("Dots Image", 568+234, 320+300);
+  if ( improvedImg != null ) {
+    drawDots(improvedImg);
+    image(dots, 1136, 320);
+    text("Dots Image", 1136+234, 320+300);
   }
 
   // export the whole image frame
-  //saveFrame();
+  saveFrame("videos/image-######.tif");
   
 }
 
@@ -170,7 +171,7 @@ PImage correctAndEnhance(PImage bin){
 }
 
 
-// Determines where the location is.
+// Draws the blobs
 // @param: enhanced binary image
 // @return: PGraphic with blobs on it
 void drawBlobs(PImage bin){
@@ -195,6 +196,36 @@ void drawBlobs(PImage bin){
 
    // close the object
    boxes.endDraw();
+   
+   // Return PGraphic object.
+   //return field;
+}
+
+// Determines where the location is.
+// @param: enhanced binary image
+// @return: PGraphic with blobs on it
+void drawDots(PImage bin){
+   // set up a new PGraphic for temporarily dumping the blobs on.
+   //PGraphics field;
+   //field = createGraphics(bin.width, bin.height);
+   
+   // get the blobs
+   ArrayList<Blob> blbs = findBlobs(bin);  
+
+   // set up the field.
+   dots.beginDraw();
+   dots.clear();
+   dots.background(0);
+   dots.fill(255,0,0);
+   
+   // set the method that Processing needs to use for drawing the objects.
+   dots.rectMode(CORNERS);
+   
+   // go through all the blobs and draw them to the PGraphic
+   for ( Blob b : blbs ) dots.ellipse((b.minx + b.maxx)/2, (b.miny+b.maxy)/2, 10, 10);
+
+   // close the object
+   dots.endDraw();
    
    // Return PGraphic object.
    //return field;
