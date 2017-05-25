@@ -8,6 +8,9 @@
 import processing.video.*;
 import processing.sound.*;
 
+// FIXED DIMENTIONS - bad practice
+int GLOBAL_WIDTH = 568;
+int GLOBAL_HEIGHT = 320;
 
 // GLOBAL VARIABLES
 Movie originalMovie;
@@ -15,6 +18,7 @@ PImage segmentedImg;
 PImage binaryImg;
 PImage improvedImg;
 PGraphics boxes;
+PGraphics dots;
 ArrayList<Blob> xyz;
 int framenumber = 0;
 int BLOCKSIZE = 13;
@@ -22,12 +26,14 @@ int BLOCKSIZE = 13;
 // Processing Set-up function.  This is run once.  All initial 
 //  parameters and settings are set here.
 void setup(){
-  size(1704,960);  // the size of the window to be rendered.
+  size(1704,640);  // the size of the window to be rendered.
   
   // the original un-modified file that we are importing to processing
   originalMovie = new Movie(this, sketchPath("monkey.mov"));
   
-  //boxes = createGraphics(improvedImg.width,improvedImg.height);
+  // use only one PGraphics object throughout the whole execution to save memory
+  boxes = createGraphics(GLOBAL_WIDTH, GLOBAL_HEIGHT);
+  //dots = createGraphics(GLOBAL_WIDTH, GLOBAL_HEIGHT);
   
   // play the original movie file
   originalMovie.play();
@@ -48,23 +54,35 @@ void draw(){
   image(originalMovie, 0, 0);
   text("Original Movie File", 234, 300);
   
-  // TOP RIGHT (2): draw the segmented movie
+  // TOP CENTER (2): draw the segmented movie
   if ( segmentedImg != null ) {
     image(segmentedImg, 568, 0);
     text("Segmented Image", 568+234, 300);
   }
   
-  // BOTTOM LEFT (3): draw the improved binary image
-  if ( improvedImg != null ) {
-    boxes = drawBlobs(improvedImg);
-    image(boxes, 0, 320);
+  // TOP RIGHT (3): draw the binary image
+  if ( binaryImg != null ) {
+    image(binaryImg, 1136, 0);
+    text("Segmented Image", 1136+234, 300);
+  }
+  
+  // BOTTOM LEFT (4): draw the improved binary image
+  if ( improvedImg != null ) {  
+    image(improvedImg, 0, 320);
+    text("Improved Binary Image", 568+234, 320+300);
+  }
+  
+  // BOTTOM CENTER (5): draw the boxes
+    if ( improvedImg != null ) {
+    drawBlobs(improvedImg);
+    image(boxes, 568, 320);
     text("Displacement boxes", 234, 320+300);
   }
   
-  // BOTTOM RIGHT (4): draw the binary movie
+  // BOTTOM RIGHT (6): draw the dots
   if ( improvedImg != null ) {  
-    image(improvedImg, 568, 320);
-    text("Improved Binary Image", 568+234, 320+300);
+    //image(improvedImg, 1136, 320);
+    text("Dots Image", 568+234, 320+300);
   }
 
   // export the whole image frame
@@ -155,30 +173,31 @@ PImage correctAndEnhance(PImage bin){
 // Determines where the location is.
 // @param: enhanced binary image
 // @return: PGraphic with blobs on it
-PGraphics drawBlobs(PImage bin){
+void drawBlobs(PImage bin){
    // set up a new PGraphic for temporarily dumping the blobs on.
-   PGraphics field;
-   field = createGraphics(bin.width, bin.height);
+   //PGraphics field;
+   //field = createGraphics(bin.width, bin.height);
    
    // get the blobs
    ArrayList<Blob> blbs = findBlobs(bin);  
 
    // set up the field.
-   field.beginDraw();
-   field.background(0);
-   field.fill(255,0,0);
+   boxes.beginDraw();
+   boxes.clear();
+   boxes.background(0);
+   boxes.fill(255,0,0);
    
    // set the method that Processing needs to use for drawing the objects.
-   field.rectMode(CORNERS);
+   boxes.rectMode(CORNERS);
    
    // go through all the blobs and draw them to the PGraphic
-   for ( Blob b : blbs ) field.rect(b.minx, b.maxy, b.maxx, b.miny);
+   for ( Blob b : blbs ) boxes.rect(b.minx, b.maxy, b.maxx, b.miny);
 
    // close the object
-   field.endDraw();
+   boxes.endDraw();
    
    // Return PGraphic object.
-   return field;
+   //return field;
 } //<>//
 
 // Determines where the location is.
