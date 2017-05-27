@@ -88,7 +88,7 @@ void draw(){
   }
 
   // export the whole image frame
-  //saveFrame("videos/image-######.tif");
+  saveFrame("videos/image-######.tif");
   
 }
 
@@ -104,7 +104,7 @@ void movieEvent(Movie m) {
   //boxes = drawBlobs(improvedImg);
   
   // save the frame
-  m.save(sketchPath("") + "movie/image" + nf(framenumber, 4) + ".tif");
+  //segmentedImg.save(sketchPath("") + "seg/image" + nf(framenumber, 4) + ".tif");
   framenumber++;
 }
 
@@ -126,12 +126,12 @@ PImage segmentMarkers(PImage video, boolean bin_image)
   
   // Remove all the pixels that do not contain high enough levels of 
   //  red.  The thresholds have been found by experimentation:
-  int AlphaRed = 160;
-  int AlphaGreen = 140;
   boolean takeColor = false;
   boolean ignoreColor = true;
   boolean ignore2Color = true;
   boolean ignore3Color = true;
+  boolean ignore4Color = true;
+  boolean ignore5Color = true;
   
   // go through all the pixels of the monkey frame.
   for(int x = 0; x < video.width; x++){
@@ -141,31 +141,48 @@ PImage segmentMarkers(PImage video, boolean bin_image)
       int mloc = x + y * video.width;
       color c = video.pixels[mloc];
       takeColor = red(c) > 149 
-                  && green(c) > 41 
+                  && green(c) > 37 
                   && green(c) < 199 
                   && blue(c) > 39
                   && blue(c) < 125;
+      
       ignoreColor = red(c) > 153 
                   && red(c) < 227
                   && green(c) > 115
                   && green(c) < 193
                   && blue(c) > 46
                   && blue(c) < 95;
+      
       ignore2Color = red(c) > 149
                   && red(c) < 228
                   && green(c) > 88
                   && green(c) < 182
                   && blue(c) > 41
                   && blue(c) < 104;
+      
       ignore3Color = red(c) > 212
-                  && red(c) < 237
-                  && green(c) > 187
+                  && red(c) < 238
+                  && green(c) > 149
+                  && green(c) < 198
+                  && blue(c) > 45 //59
+                  && blue(c) < 125;         
+      
+      ignore4Color = red(c) > 171
+                  && red(c) < 226
+                  && green(c) > 147
                   && green(c) < 197
-                  && blue(c) > 66
-                  && blue(c) < 103;
+                  && blue(c) > 56
+                  && blue(c) < 121;   
+                  
+      ignore5Color = red(c) > 233
+                  && red(c) < 252
+                  && green(c) > 171
+                  && green(c) < 196
+                  && blue(c) > 65
+                  && blue(c) < 105; 
                     
       // if the pixel correct has color, calculate the new location 
-      if( takeColor && !ignoreColor && !ignore2Color) {
+      if( takeColor && !ignoreColor && !ignore2Color && !ignore3Color  &&!ignore4Color && !ignore5Color) {
         int bgx = constrain(x + adjust_width, 0, blank.width);
         int bgy = constrain(y + adjust_height, 0, blank.height);
         int bgloc = bgx + bgy * blank.width;
@@ -190,10 +207,10 @@ PImage correctAndEnhance(PImage bin){
   
   // first erode all the small bits
   improvement = im_erosion(bin);  
-  for ( int i = 0; i < 2; i++) improvement = im_erosion(improvement);
+  for ( int i = 0; i < 0; i++) improvement = im_erosion(improvement);
   
   // dilate image many times
-  for ( int i = 0; i < 7; i++) improvement = im_dilation(improvement);
+  for ( int i = 0; i < 4; i++) improvement = im_dilation(improvement);
 
   return improvement;
 }
@@ -251,9 +268,11 @@ void drawDots(PImage bin){
    
    // go through all the blobs and draw them to the PGraphic
    for ( Blob b : blbs ) dots.ellipse((b.minx + b.maxx)/2, (b.miny+b.maxy)/2, 10, 10);
-
+    
    // close the object
    dots.endDraw();
+   
+   println("dots: " + blbs.size() );
    
    // Return PGraphic object.
    //return field;
