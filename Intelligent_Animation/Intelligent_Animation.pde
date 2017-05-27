@@ -83,11 +83,12 @@ void draw(){
   if ( improvedImg != null ) {
     drawDots(improvedImg);
     image(dots, 1136, 320);
+    //image(dots, 0, 0);
     text("Dots Image", 1136+234, 320+300);
   }
 
   // export the whole image frame
-  saveFrame("videos/image-######.tif");
+  //saveFrame("videos/image-######.tif");
   
 }
 
@@ -103,7 +104,7 @@ void movieEvent(Movie m) {
   //boxes = drawBlobs(improvedImg);
   
   // save the frame
-  //binaryImg.save(sketchPath("") + "binary/image" + nf(framenumber, 4) + ".tif");
+  m.save(sketchPath("") + "movie/image" + nf(framenumber, 4) + ".tif");
   framenumber++;
 }
 
@@ -126,7 +127,11 @@ PImage segmentMarkers(PImage video, boolean bin_image)
   // Remove all the pixels that do not contain high enough levels of 
   //  red.  The thresholds have been found by experimentation:
   int AlphaRed = 160;
-  int AlphaGreen = 110;  
+  int AlphaGreen = 140;
+  boolean takeColor = false;
+  boolean ignoreColor = true;
+  boolean ignore2Color = true;
+  boolean ignore3Color = true;
   
   // go through all the pixels of the monkey frame.
   for(int x = 0; x < video.width; x++){
@@ -135,9 +140,32 @@ PImage segmentMarkers(PImage video, boolean bin_image)
       //  and get the color at that pixel.
       int mloc = x + y * video.width;
       color c = video.pixels[mloc];
-    
+      takeColor = red(c) > 149 
+                  && green(c) > 41 
+                  && green(c) < 199 
+                  && blue(c) > 39
+                  && blue(c) < 125;
+      ignoreColor = red(c) > 153 
+                  && red(c) < 227
+                  && green(c) > 115
+                  && green(c) < 193
+                  && blue(c) > 46
+                  && blue(c) < 95;
+      ignore2Color = red(c) > 149
+                  && red(c) < 228
+                  && green(c) > 88
+                  && green(c) < 182
+                  && blue(c) > 41
+                  && blue(c) < 104;
+      ignore3Color = red(c) > 212
+                  && red(c) < 237
+                  && green(c) > 187
+                  && green(c) < 197
+                  && blue(c) > 66
+                  && blue(c) < 103;
+                    
       // if the pixel correct has color, calculate the new location 
-      if( red(c) > AlphaRed && green(c) < AlphaGreen ) {
+      if( takeColor && !ignoreColor && !ignore2Color) {
         int bgx = constrain(x + adjust_width, 0, blank.width);
         int bgy = constrain(y + adjust_height, 0, blank.height);
         int bgloc = bgx + bgy * blank.width;
@@ -161,11 +189,11 @@ PImage correctAndEnhance(PImage bin){
   PImage improvement = new PImage(bin.width, bin.height);
   
   // first erode all the small bits
-  improvement = im_erosion(bin);
-  for ( int i = 0; i < 0; i++) improvement = im_erosion(improvement);
+  improvement = im_erosion(bin);  
+  for ( int i = 0; i < 2; i++) improvement = im_erosion(improvement);
   
   // dilate image many times
-  for ( int i = 0; i < 8; i++) improvement = im_dilation(improvement);
+  for ( int i = 0; i < 7; i++) improvement = im_dilation(improvement);
 
   return improvement;
 }
