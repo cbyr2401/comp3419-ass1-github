@@ -207,10 +207,10 @@ PImage correctAndEnhance(PImage bin){
   
   // first erode all the small bits
   improvement = im_erosion(bin);  
-  for ( int i = 0; i < 0; i++) improvement = im_erosion(improvement);
+  for ( int i = 0; i < 1; i++) improvement = im_erosion(improvement);
   
   // dilate image many times
-  for ( int i = 0; i < 4; i++) improvement = im_dilation(improvement);
+  for ( int i = 0; i < 7; i++) improvement = im_dilation(improvement);
 
   return improvement;
 }
@@ -389,6 +389,9 @@ void checkBlobs(ArrayList<Blob> list){
   // create temporary data store for items to remove.
   ArrayList<Blob> removal = new ArrayList<Blob>();
   
+  // near distance
+  int NEAR = 10;
+  
   // go through all elements twice, checking if there is an overlap.
   for ( Blob a : list ){
     for ( Blob b : list ){
@@ -401,6 +404,7 @@ void checkBlobs(ArrayList<Blob> list){
           // check for overlaps, add to removal set if 
           //  there is an overlap.
           if ( a.isInside(b) ) removal.add(b);
+          //if ( a.isNear(b, NEAR) ) removal.add(b);
       }
     }
   }
@@ -489,6 +493,19 @@ public class Blob {
            b.maxy <= maxy && b.maxy >= miny &&
            b.miny <= maxy && b.miny >= miny) return true;
         else return false;
+    }
+    
+    // Returns if the given blob is distance near
+    public boolean isNear(Blob b, int df){
+       int clocx = (minx + maxx)/2;
+       int clocy = (miny + maxy)/2;
+       
+       int clocbx = (b.minx + b.maxx)/2;
+       int clocby = (b.miny + b.maxy)/2;
+       
+       if ( dist(clocx, clocy, clocbx, clocby) < df) return true;
+
+       return false;
     }
 }
 // FUNCTIONS FOR GENERATING MOVIE OBJECTS
