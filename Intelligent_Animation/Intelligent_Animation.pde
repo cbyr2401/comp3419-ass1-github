@@ -88,7 +88,7 @@ void draw(){
   }
 
   // export the whole image frame
-  saveFrame("videos/image-######.tif");
+  //saveFrame("videos/image-######.tif");
   
 }
 
@@ -508,6 +508,7 @@ public class Blob {
        return false;
     }
 }
+
 // FUNCTIONS FOR GENERATING MOVIE OBJECTS
 
 
