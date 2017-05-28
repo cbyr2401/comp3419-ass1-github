@@ -130,9 +130,6 @@ PImage segmentMarkers(PImage video, boolean bin_image)
   boolean takeColor = false;
   boolean ignoreFilter1 = true;
   boolean ignoreFilter2 = true;
-  boolean ignore3Color = true;
-  boolean ignore4Color = true;
-  boolean ignore5Color = true;
   
   // go through all the pixels of the monkey frame.
   for(int x = 0; x < video.width; x++){
@@ -160,12 +157,9 @@ PImage segmentMarkers(PImage video, boolean bin_image)
                   && green(c) < 166
                   && blue(c) > 47
                   && blue(c) < 116;     
-      
-
-                    
+                 
       // if the pixel correct has color, calculate the new location 
-      //if( takeColor && !ignoreColor && !ignore2Color && !ignore3Color  &&!ignore4Color && !ignore5Color) {
-        if( takeColor && !ignoreFilter1 && !ignoreFilter2){
+      if( takeColor && !ignoreFilter1 && !ignoreFilter2){
         int bgx = constrain(x + adjust_width, 0, blank.width);
         int bgy = constrain(y + adjust_height, 0, blank.height);
         int bgloc = bgx + bgy * blank.width;
