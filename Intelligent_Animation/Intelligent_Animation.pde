@@ -22,7 +22,7 @@ PGraphics dots;
 ArrayList<Blob> xyz;
 int framenumber = 0;
 int BLOCKSIZE = 13;
-Creature monster;
+Creature monster = new Creature();
 
 // Processing Set-up function.  This is run once.  All initial 
 //  parameters and settings are set here.
@@ -269,6 +269,8 @@ void drawDots(PImage bin){
     
    // close the object
    dots.endDraw();
+   
+   drawCreature(blbs);
    
    println("dots: " + blbs.size() );
    
@@ -545,6 +547,8 @@ void drawCreature(ArrayList<Blob> blobs){
       }
   }
   
+  blobs.remove(top_left);
+  
   // find top right
   targetx = 0;
   targety = 999;
@@ -555,6 +559,8 @@ void drawCreature(ArrayList<Blob> blobs){
         top_right = b;
       }
   }
+  
+  blobs.remove(top_right);
   
   // find bottom left
   targetx = 999;
@@ -567,6 +573,8 @@ void drawCreature(ArrayList<Blob> blobs){
       }
   } 
   
+  blobs.remove(bot_left);
+  
   // find bottom right
   targetx = 0;
   targety = 0;
@@ -577,6 +585,8 @@ void drawCreature(ArrayList<Blob> blobs){
         bot_right = b;
       }
   }
+  
+  blobs.remove(bot_right);
   
   // find centre - the cheat method.
   for ( Blob b : blobs ){
@@ -622,12 +632,17 @@ public class Creature{
     BodyPart centre = null;
     
     public Creature() {
-      top_left = new BodyPart("monster/leftarm.png");
-      top_right = new BodyPart("monster/rightarm.png");
-      bot_left = new BodyPart("monster/leftleg.png");
-      bot_right = new BodyPart("monster/rightleg.png");
-      centre = new BodyPart("monster/body.png");
+      //top_left = new BodyPart("monster/leftarm.png");
+      //top_right = new BodyPart("monster/rightarm.png");
+      //bot_left = new BodyPart("monster/leftleg.png");
+      //bot_right = new BodyPart("monster/rightleg.png");
+      //centre = new BodyPart("monster/body.png");  
       
+      top_left = new BodyPart();
+      top_right = new BodyPart();
+      bot_left = new BodyPart();
+      bot_right = new BodyPart();
+      centre = new BodyPart();  
     }
     
     public void update(ArrayList<Blob> list){
@@ -654,11 +669,14 @@ public class Creature{
     }
     
     public void render(){
-      top_left.render();
-      top_right.render();
-      bot_left.render();
-      bot_right.render();
-      centre.render();
+      top_left.renderHand(centre);
+      top_right.renderHand(centre);
+      bot_left.renderHand(centre);
+      bot_right.renderHand(centre);
+      //centre.render();
+      
+      // extra parts
+      
     }
   
   
@@ -676,6 +694,10 @@ public class BodyPart{
       texture = loadImage(texturePath);
       m_height = texture.height;
       m_width = texture.width;
+   }
+   
+   public BodyPart(){
+     
    }
    
    public void setPosition(int x, int y){
@@ -696,6 +718,26 @@ public class BodyPart{
      // draw object
      image(texture, xcoord, ycoord);
    }
+   
+   public void renderHand(BodyPart center){
+      // hand
+      stroke(126);
+      fill(126);
+      strokeWeight(1);
+      ellipse(xcoord,ycoord,30,30);
+      // arm
+      strokeWeight(12);
+      //line(xcoord,ycoord,(ycoord+center.cx()-10)/2,(ycoord+center.cy()+25)/2);
+      //line((xcoord+center.cx()-10)/2,(ycoord+center.cy()+25)/2,center.cx(),center.cy());
+      line(xcoord, ycoord, center.cx(), center.cy());
+   }
+   
+   public void renderBody(){
+       
+   }
+   
+   public int cx(){ return xcoord; }
+   public int cy(){ return ycoord; }
 }
 
 //
