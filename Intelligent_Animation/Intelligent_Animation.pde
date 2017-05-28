@@ -89,7 +89,7 @@ void draw(){
   }
 
   // export the whole image frame
-  //saveFrame("videos/image-######.tif");
+  saveFrame("export/image-######.tif");
   
 }
 
@@ -128,8 +128,8 @@ PImage segmentMarkers(PImage video, boolean bin_image)
   // Remove all the pixels that do not contain high enough levels of 
   //  red.  The thresholds have been found by experimentation:
   boolean takeColor = false;
-  boolean ignoreColor = true;
-  boolean ignore2Color = true;
+  boolean ignoreFilter1 = true;
+  boolean ignoreFilter2 = true;
   boolean ignore3Color = true;
   boolean ignore4Color = true;
   boolean ignore5Color = true;
@@ -146,44 +146,26 @@ PImage segmentMarkers(PImage video, boolean bin_image)
                   && green(c) < 199 
                   && blue(c) > 39
                   && blue(c) < 125;
+      // face chromes
+      ignoreFilter1 = red(c) > 190 
+                  && red(c) < 254
+                  && green(c) > 137
+                  && green(c) < 199
+                  && blue(c) > 55
+                  && blue(c) < 120;
+      // browns
+      ignoreFilter2 = red(c) > 148 
+                  && red(c) < 201
+                  && green(c) > 87
+                  && green(c) < 166
+                  && blue(c) > 47
+                  && blue(c) < 116;     
       
-      ignoreColor = red(c) > 153 
-                  && red(c) < 227
-                  && green(c) > 115
-                  && green(c) < 193
-                  && blue(c) > 46
-                  && blue(c) < 95;
-      
-      ignore2Color = red(c) > 149
-                  && red(c) < 228
-                  && green(c) > 88
-                  && green(c) < 182
-                  && blue(c) > 41
-                  && blue(c) < 104;
-      
-      ignore3Color = red(c) > 212
-                  && red(c) < 238
-                  && green(c) > 149
-                  && green(c) < 198
-                  && blue(c) > 45 //59
-                  && blue(c) < 125;         
-      
-      ignore4Color = red(c) > 171
-                  && red(c) < 226
-                  && green(c) > 147
-                  && green(c) < 197
-                  && blue(c) > 56
-                  && blue(c) < 121;   
-                  
-      ignore5Color = red(c) > 233
-                  && red(c) < 252
-                  && green(c) > 171
-                  && green(c) < 196
-                  && blue(c) > 65
-                  && blue(c) < 105; 
+
                     
       // if the pixel correct has color, calculate the new location 
-      if( takeColor && !ignoreColor && !ignore2Color && !ignore3Color  &&!ignore4Color && !ignore5Color) {
+      //if( takeColor && !ignoreColor && !ignore2Color && !ignore3Color  &&!ignore4Color && !ignore5Color) {
+        if( takeColor && !ignoreFilter1 && !ignoreFilter2){
         int bgx = constrain(x + adjust_width, 0, blank.width);
         int bgy = constrain(y + adjust_height, 0, blank.height);
         int bgloc = bgx + bgy * blank.width;
@@ -270,7 +252,7 @@ void drawDots(PImage bin){
    // close the object
    dots.endDraw();
    
-   drawCreature(blbs);
+   //drawCreature(blbs);
    
    println("dots: " + blbs.size() );
    
