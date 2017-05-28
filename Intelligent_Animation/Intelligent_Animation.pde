@@ -22,6 +22,7 @@ PGraphics dots;
 ArrayList<Blob> xyz;
 int framenumber = 0;
 int BLOCKSIZE = 13;
+Creature monster;
 
 // Processing Set-up function.  This is run once.  All initial 
 //  parameters and settings are set here.
@@ -263,11 +264,8 @@ void drawDots(PImage bin){
    dots.background(0);
    dots.fill(255,0,0);
    
-   // set the method that Processing needs to use for drawing the objects.
-   dots.rectMode(CORNERS);
-   
    // go through all the blobs and draw them to the PGraphic
-   for ( Blob b : blbs ) dots.ellipse((b.minx + b.maxx)/2, (b.miny+b.maxy)/2, 10, 10);
+   for ( Blob b : blbs ) dots.ellipse(b.cx(), b.cy(), 10, 10);
     
    // close the object
    dots.endDraw();
@@ -507,10 +505,198 @@ public class Blob {
 
        return false;
     }
+    
+    // Returns centre x-coordinate
+    public int cx(){
+       return (int) ((minx + maxx)/2); 
+    }
+    
+    // Returns centre x-coordinate
+    public int cy(){
+       return (int) ((miny + maxy)/2); 
+    }
 }
 
 // FUNCTIONS FOR GENERATING MOVIE OBJECTS
 
+// Draws the creature to the display.
+
+void drawCreature(ArrayList<Blob> blobs){
+  int arrlen = blobs.size();
+  Blob top_left = null;
+  Blob top_right = null;
+  Blob centre = null;
+  Blob bot_left = null;
+  Blob bot_right = null;
+  ArrayList<Blob> sorted = new ArrayList<Blob>(5);  // temp array
+  
+  // find the points for the top. (minimising y)
+  int targetx = 999;
+  int targety = 999;
+  
+  // find top left.
+  targetx = 999;
+  targety = 999;
+  for ( Blob b : blobs ){
+      if (b.miny < targety && b.minx < targetx) {
+        targety = b.cy();
+        targetx = b.cx();
+        top_left = b;
+      }
+  }
+  
+  // find top right
+  targetx = 0;
+  targety = 999;
+  for ( Blob b : blobs ){
+      if (b.cy() < targety && b.cx() > targetx) {
+        targety = b.cy();
+        targetx = b.cx();
+        top_right = b;
+      }
+  }
+  
+  // find bottom left
+  targetx = 999;
+  targety = 0;
+  for ( Blob b : blobs ){
+      if (b.cy() > targety && b.cx() < targetx) {
+        targety = b.cy();
+        targetx = b.cx();
+        bot_left = b;
+      }
+  } 
+  
+  // find bottom right
+  targetx = 0;
+  targety = 0;
+  for ( Blob b : blobs ){
+      if (b.cy() > targety && b.cx() > targetx) {
+        targety = b.cy();
+        targetx = b.cx();
+        bot_right = b;
+      }
+  }
+  
+  // find centre - the cheat method.
+  for ( Blob b : blobs ){
+      if ( ( b == top_left ||
+           b == top_right ||
+           b == bot_left ||
+           b == bot_right ) && 
+           arrlen > 4 ){}
+      else {
+        centre = b;
+        break;
+      }       
+  }
+  
+  // determine which parts are missing.
+  // compinsate for missing points by using the previous values (done in class)
+  // add all to the array list to update the creature
+  
+  
+  // find the correct parts based on dot position
+  sorted.add(top_left);
+  sorted.add(top_right);
+  sorted.add(bot_left);
+  sorted.add(bot_right);
+  sorted.add(centre);
+  
+  // update monster
+  monster.update(sorted);
+  
+  // render the monster
+  monster.render();
+  
+    
+}
+
+
+// NEW CLASS FOR CREATURE
+public class Creature{
+    BodyPart top_left = null;
+    BodyPart top_right = null;
+    BodyPart bot_left = null;
+    BodyPart bot_right = null;
+    BodyPart centre = null;
+    
+    public Creature() {
+      top_left = new BodyPart("monster/leftarm.png");
+      top_right = new BodyPart("monster/rightarm.png");
+      bot_left = new BodyPart("monster/leftleg.png");
+      bot_right = new BodyPart("monster/rightleg.png");
+      centre = new BodyPart("monster/body.png");
+      
+    }
+    
+    public void update(ArrayList<Blob> list){
+       // order: top left, top right, bot left, bot right, centre
+       if ( list.get(0) != null ){
+         top_left.setPosition(list.get(0).cx(), list.get(0).cy());
+       }
+       
+       if ( list.get(1) != null ){
+         top_right.setPosition(list.get(1).cx(), list.get(1).cy());
+       }
+       
+       if ( list.get(2) != null ){
+         bot_left.setPosition(list.get(2).cx(), list.get(2).cy());
+       }
+       
+       if ( list.get(3) != null ){
+         bot_right.setPosition(list.get(3).cx(), list.get(3).cy());
+       }
+       
+       if ( list.get(4) != null ){
+         centre.setPosition(list.get(4).cx(), list.get(4).cy());
+       }
+    }
+    
+    public void render(){
+      top_left.render();
+      top_right.render();
+      bot_left.render();
+      bot_right.render();
+      centre.render();
+    }
+  
+  
+}
+
+
+public class BodyPart{
+   int xcoord = 0;
+   int ycoord = 0;
+   PImage texture = null;
+   int m_height;
+   int m_width;
+   
+   public BodyPart(String texturePath){
+      texture = loadImage(texturePath);
+      m_height = texture.height;
+      m_width = texture.width;
+   }
+   
+   public void setPosition(int x, int y){
+     xcoord = x;
+     ycoord = y;
+   }
+   
+   public void setSize(int h, int w){
+      m_height = h;
+      m_width = w;
+   }
+   
+   public void render(){ 
+     // resize
+     texture.resize(m_width, m_height);
+     // set draw mode to from centre
+     imageMode(CENTER);
+     // draw object
+     image(texture, xcoord, ycoord);
+   }
+}
 
 //
 //    ~~ SPLIT ~~
