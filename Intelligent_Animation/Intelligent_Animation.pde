@@ -146,16 +146,16 @@ PImage segmentMarkers(PImage video, boolean bin_image)
       // face chromes
       ignoreFilter1 = red(c) > 190 
                   && red(c) < 254
-                  && green(c) > 137
+                  && green(c) > 132
                   && green(c) < 199
-                  && blue(c) > 55
-                  && blue(c) < 120;
+                  && blue(c) > 44
+                  && blue(c) < 125;
       // browns
       ignoreFilter2 = red(c) > 148 
                   && red(c) < 201
-                  && green(c) > 87
+                  && green(c) > 83
                   && green(c) < 166
-                  && blue(c) > 47
+                  && blue(c) > 39
                   && blue(c) < 116;     
                  
       // if the pixel correct has color, calculate the new location 
@@ -261,8 +261,8 @@ ArrayList findBlobs(PImage bin){
    ArrayList<Blob> blobs = new ArrayList<Blob>(5);
    
    color white = color(255,255,255);  // convience.
-   int threshold = 9;  // number of pixels to be within a blob
-   int jump = 2;    // number of pixels to skip, looking at all of them will take a while.
+   int threshold = 5;  // number of pixels to be within a blob
+   int jump = 1;    // number of pixels to skip, looking at all of them will take a while.
    
    boolean inBlob = false;
    
@@ -366,7 +366,7 @@ void checkBlobs(ArrayList<Blob> list){
   ArrayList<Blob> removal = new ArrayList<Blob>();
   
   // near distance
-  int NEAR = 10;
+  int NEAR = 20;
   
   // go through all elements twice, checking if there is an overlap.
   for ( Blob a : list ){
@@ -375,12 +375,16 @@ void checkBlobs(ArrayList<Blob> list){
       {
         // do not check same elements
       }
+      else if ( removal.contains(a) || removal.contains(b) )
+      {
+        // do not check elements already due for deletion
+      }
       else 
       {
           // check for overlaps, add to removal set if 
           //  there is an overlap.
           if ( a.isInside(b) ) removal.add(b);
-          //if ( a.isNear(b, NEAR) ) removal.add(b);
+          else if ( a.isNear(b, NEAR) ) removal.add(b);
       }
     }
   }
