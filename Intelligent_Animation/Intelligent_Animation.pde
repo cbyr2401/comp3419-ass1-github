@@ -17,12 +17,13 @@ Movie originalMovie;
 PImage segmentedImg;
 PImage binaryImg;
 PImage improvedImg;
+ArrayList<PImage> imageParts;
 PGraphics boxes;
 PGraphics dots;
 ArrayList<Blob> xyz;
 int framenumber = 0;
 int BLOCKSIZE = 13;
-Creature monster = new Creature();
+Creature monster;
 
 // Processing Set-up function.  This is run once.  All initial 
 //  parameters and settings are set here.
@@ -35,6 +36,15 @@ void setup(){
   // use only one PGraphics object throughout the whole execution to save memory
   boxes = createGraphics(GLOBAL_WIDTH, GLOBAL_HEIGHT);
   dots = createGraphics(GLOBAL_WIDTH, GLOBAL_HEIGHT);
+  
+  imageParts = new ArrayList<PImage>(5);
+  imageParts.add(loadImage("monster/lefthand.png"));
+  imageParts.add(loadImage("monster/righthand.png"));
+  imageParts.add(loadImage("monster/leftfoot.png"));
+  imageParts.add(loadImage("monster/rightfoot.png"));
+  imageParts.add(loadImage("monster/body.png"));
+  
+  monster = new Creature();
   
   // play the original movie file
   originalMovie.play();
@@ -651,17 +661,23 @@ public class Creature{
     BodyPart centre = null;
     
     public Creature() {
-      //top_left = new BodyPart("monster/leftarm.png");
-      //top_right = new BodyPart("monster/rightarm.png");
-      //bot_left = new BodyPart("monster/leftleg.png");
-      //bot_right = new BodyPart("monster/rightleg.png");
-      //centre = new BodyPart("monster/body.png");  
+      top_left = new BodyPart(imageParts.get(0));
+      top_right = new BodyPart(imageParts.get(1));
+      bot_left = new BodyPart(imageParts.get(2));
+      bot_right = new BodyPart(imageParts.get(3));
+      centre = new BodyPart(imageParts.get(4));  
       
-      top_left = new BodyPart();
-      top_right = new BodyPart();
-      bot_left = new BodyPart();
-      bot_right = new BodyPart();
-      centre = new BodyPart();  
+      top_left.setSize(30,30);
+      top_right.setSize(30,30);
+      bot_left.setSize(30,30);
+      bot_right.setSize(30,30);
+      centre.setSize(60,120);
+      
+      //top_left = new BodyPart();
+      //top_right = new BodyPart();
+      //bot_left = new BodyPart();
+      //bot_right = new BodyPart();
+      //centre = new BodyPart();  
     }
     
     public void update(ArrayList<Blob> list){
@@ -688,11 +704,17 @@ public class Creature{
     }
     
     public void render(){
-      top_left.renderHand(centre);
-      top_right.renderHand(centre);
-      bot_left.renderHand(centre);
-      bot_right.renderHand(centre);
-      centre.renderBody();
+      //top_left.renderHand(centre);
+      //top_right.renderHand(centre);
+      //bot_left.renderHand(centre);
+      //bot_right.renderHand(centre);
+      //centre.renderBody();
+      
+      bot_left.render();
+      bot_right.render();
+      top_left.render();
+      top_right.render();
+      centre.render();
       
       // extra parts
       
@@ -703,14 +725,14 @@ public class Creature{
 
 
 public class BodyPart{
-   int xcoord = 0;
-   int ycoord = 0;
+   int xcoord = 200;
+   int ycoord = 200;
    PImage texture = null;
    int m_height;
    int m_width;
    
-   public BodyPart(String texturePath){
-      texture = loadImage(texturePath);
+   public BodyPart(PImage texturePath){
+      texture = texturePath;
       m_height = texture.height;
       m_width = texture.width;
    }
@@ -724,7 +746,7 @@ public class BodyPart{
      ycoord = y;
    }
    
-   public void setSize(int h, int w){
+   public void setSize(int w, int h){
       m_height = h;
       m_width = w;
    }
