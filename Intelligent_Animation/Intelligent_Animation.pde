@@ -75,7 +75,7 @@ void draw(){
   // draw the creature to the screen if there is an image avaiable.
   if ( improvedImg != null ) {
     drawCreature(improvedImg);
-    image(monsterCanvas, 1136, 320);
+    image(monsterCanvas, 200, 200);
   }
   
   // draw the randomly generated objects
@@ -248,6 +248,9 @@ ArrayList<PVector> findPoints(PImage bin){
       }
     }
     
+    // safety check - check we have the point, otherwise add it.
+    if ( !tl ) points.add(new PVector(minimumx+25, minimumy+25));
+    
     // find the points individually (top right)
     TRLoop:
     for ( int x = maximumx; x > quadrantx + quadrant_threshold; x -= jump ){ //minimumx + searcharea_x
@@ -262,6 +265,9 @@ ArrayList<PVector> findPoints(PImage bin){
         }
       }
     }
+    
+    // safety check - check we have the point, otherwise add it.
+    if ( !tr ) points.add(new PVector(maximumx-25, minimumy+25));
     
     // find the points individually (bottom left)
     BLLoop:
@@ -278,6 +284,9 @@ ArrayList<PVector> findPoints(PImage bin){
       }
     }
     
+    // safety check - check we have the point, otherwise add it.
+    if ( !bl ) points.add(new PVector(minimumx+25, maximumy-25));
+    
     // find the points individually (bottom right)
     BRLoop:
     for ( int x = maximumx; x > quadrantx + quadrant_threshold; x -= jump ){ // minimumx + searcharea_x
@@ -293,11 +302,8 @@ ArrayList<PVector> findPoints(PImage bin){
       }
     }
     
-    // safety check - check we have all the points
-    if ( !tl ) points.add(new PVector(minimumx+25, minimumy+25));
-    if ( !tr ) points.add(new PVector(maximumx-25, minimumy+25));
-    if ( !bl ) points.add(new PVector(minimumx+25, maximumy-25));
-    if ( !br ) points.add(new PVector(maximumx-25, maximumy-25));
+    // safety check - check we have the point, otherwise add it.
+    if ( !br ) points.add(new PVector(maximumx-25, maximumy-25));    
     
     // calculate the centre point
     points.add(new PVector((minimumx + maximumx) / 2, (minimumy+maximumy) / 2));
