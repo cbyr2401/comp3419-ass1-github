@@ -13,11 +13,11 @@ public class Creature{
       bot_right = new BodyPart(imgp.get(3));
       centre = new BodyPart(imgp.get(4));  
       
-      top_left.setSize(30,30);
-      top_right.setSize(30,30);
-      bot_left.setSize(30,30);
-      bot_right.setSize(30,30);
-      centre.setSize(60,120);
+      top_left.setSize(45,45);
+      top_right.setSize(45,45);
+      bot_left.setSize(45,45);
+      bot_right.setSize(45,45);
+      centre.setSize(90,150);
       
       //top_left = new BodyPart();
       //top_right = new BodyPart();
@@ -70,25 +70,24 @@ public class Creature{
        canvas.beginDraw();
        canvas.clear();
        canvas.imageMode(CENTER);
-       canvas.stroke(0,255,0);
+       canvas.stroke(34,177,76);
+       canvas.strokeWeight(15);
        
+       canvas.line(bot_left.xcoord+15, bot_left.ycoord-15, centre.xcoord, centre.ycoord);
        canvas.image(bot_left.texture, bot_left.xcoord, bot_left.ycoord);
-       canvas.line(bot_left.xcoord, bot_left.ycoord, centre.xcoord, centre.ycoord);
-       
+      
+       canvas.line(bot_right.xcoord-15, bot_right.ycoord+15, centre.xcoord, centre.ycoord);
        canvas.image(bot_right.texture, bot_right.xcoord, bot_right.ycoord);
-       canvas.line(bot_right.xcoord, bot_right.ycoord, centre.xcoord, centre.ycoord);
        
-       canvas.image(top_left.texture, top_left.xcoord, top_left.ycoord);
        canvas.line(top_left.xcoord, top_left.ycoord, centre.xcoord, centre.ycoord);
+       canvas.image(top_left.texture, top_left.xcoord, top_left.ycoord);
        
-       canvas.image(top_right.texture, top_right.xcoord, top_right.ycoord);
        canvas.line(top_right.xcoord, top_right.ycoord, centre.xcoord, centre.ycoord);
-       
+       canvas.image(top_right.texture, top_right.xcoord, top_right.ycoord);
+
        canvas.image(centre.texture, centre.xcoord, centre.ycoord);       
        canvas.endDraw();
     }
-  
-  
 }
 
 

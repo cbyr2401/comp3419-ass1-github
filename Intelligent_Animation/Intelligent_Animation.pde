@@ -96,7 +96,7 @@ void draw(){
     //drawBlobs(improvedImg);
     drawPoints(improvedImg);
     image(boxes, 568, 320);
-    text("Displacement boxes", 568+234, 320+300);
+    text("Points", 568+234, 320+300);
   }
   
   // BOTTOM RIGHT (6): draw the dots
@@ -105,11 +105,11 @@ void draw(){
     drawCreature(improvedImg);
     image(monsterCanvas, 1136, 320);
     //image(dots, 0, 0);
-    text("Dots Image", 1136+234, 320+300);
+    text("Monster Canvas Image", 1136+234, 320+300);
   }
 
   // export the whole image frame
-  //saveFrame("export/image-######.tif");
+  saveFrame("export/image-######.tif");
   
 }
 
