@@ -224,6 +224,7 @@ ArrayList<PVector> findPoints(PImage bin){
     color white = color(255,255,255);
     int jump = 1;
     
+    
     for ( int x = 0; x < bin.width; x += jump ){
       for ( int y = 0; y < bin.height; y += jump ){
         int loc = x + y * bin.width;
@@ -239,11 +240,86 @@ ArrayList<PVector> findPoints(PImage bin){
       }
     }
     
+    // find the points individually. (min y)
+    for ( int x = 0; x < bin.width; x += jump ){
+      for ( int y = 0; y < bin.height; y += jump ){
+        int loc = x + y * bin.width;
+        color c = bin.pixels[loc];
+        // if pixel is white:
+        if ( c == white) {
+          if ( y == minimumy )
+           {
+             points.add(new PVector(x, y));
+             minimumy = 999;
+             break;
+           }
+        }
+      }
+    }
+    
+    // find the points individually (max y)
+    for ( int x = 0; x < bin.width; x += jump ){
+      for ( int y = 0; y < bin.height; y += jump ){
+        int loc = x + y * bin.width;
+        color c = bin.pixels[loc];
+        // if pixel is white:
+        if ( c == white) { 
+           if ( y == maximumy )
+           {
+             points.add(new PVector(x, y));
+             maximumy = 999;
+             break;
+           }
+        }
+      }
+    }
+    
+    // find the points individually (min  x)
+    for ( int x = 0; x < bin.width; x += jump ){
+      for ( int y = 0; y < bin.height; y += jump ){
+        int loc = x + y * bin.width;
+        color c = bin.pixels[loc];
+        // if pixel is white:
+        if ( c == white) {
+           if ( x == minimumx )
+           {
+             points.add(new PVector(x, y));
+             minimumx = 999;
+             break;
+           }
+           
+           else if ( x == maximumx )
+           {
+             points.add(new PVector(x, y));
+             maximumx = 999;
+             break;
+           }
+        }
+      }
+    }
+    
+    // find the points individually (max  x)
+    for ( int x = 0; x < bin.width; x += jump ){
+      for ( int y = 0; y < bin.height; y += jump ){
+        int loc = x + y * bin.width;
+        color c = bin.pixels[loc];
+        // if pixel is white:
+        if ( c == white) { 
+           if ( x == maximumx )
+           {
+             points.add(new PVector(x, y));
+             maximumx = 999;
+             break;
+           }
+        }
+      }
+    }
+    
     // compute points
-    points.add(new PVector(minimumx, minimumy));
-    points.add(new PVector(maximumx, minimumy));
-    points.add(new PVector(minimumx, maximumy));
-    points.add(new PVector(maximumx, maximumy));
+    //points.add(new PVector(minimumx, minimumy));
+    //points.add(new PVector(maximumx, minimumy));
+    //points.add(new PVector(minimumx, maximumy));
+    //points.add(new PVector(maximumx, maximumy));
     points.add(new PVector((minimumx + maximumx) / 2, (minimumy+maximumy) / 2));
   
     return points;
