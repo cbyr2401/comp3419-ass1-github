@@ -208,7 +208,7 @@ PImage correctAndEnhance(PImage bin){
 }
 
 
-// Uses the Quad Method for getting the points.
+// Uses the QUAD Method for getting the points.
 // @param: enhanced binary image
 // @return: PGraphic with blobs on it
 ArrayList<PVector> findPoints(PImage bin){
@@ -239,17 +239,19 @@ ArrayList<PVector> findPoints(PImage bin){
       }
     }
     
-    int searcharea_x = 25;
-    int searcharea_y = 60;
+    // Only search the quadrant where we expect to find the point.  This
+    //  is to prevent us from accidently picking up a different point or
+    //  the centre point.
     int quadrantx = (minimumx + maximumx) / 2;
     int quadranty = (minimumy + maximumy) / 2;
     int quadrant_threshold = 15;
     
+    // these are here for later on.
     boolean tl = false;
     boolean tr = false;
     boolean bl = false;
     boolean br = false;
-    
+
     // find the points individually. (top left)
     TLLoop:
     for ( int x = minimumx; x < quadrantx - quadrant_threshold; x += jump ){ //maximumx - searcharea_x
@@ -311,13 +313,14 @@ ArrayList<PVector> findPoints(PImage bin){
       }
     }
     
-    // check we have all the points
+    // safety check - check we have all the points
     if ( !tl ) points.add(new PVector(minimumx+25, minimumy+25));
     if ( !tr ) points.add(new PVector(maximumx-25, minimumy+25));
     if ( !bl ) points.add(new PVector(minimumx+25, maximumy-25));
     if ( !br ) points.add(new PVector(maximumx-25, maximumy-25));
     
-    // compute points
+    // compute points - old method without finding the actual points.  Produces
+    //  a very large box and only shows small movements
     //points.add(new PVector(minimumx, minimumy));
     //points.add(new PVector(maximumx, minimumy));
     //points.add(new PVector(minimumx, maximumy));
