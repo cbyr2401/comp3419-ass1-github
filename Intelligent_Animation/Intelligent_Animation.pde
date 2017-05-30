@@ -85,7 +85,8 @@ void draw(){
   
   // BOTTOM CENTER (5): draw the boxes
     if ( improvedImg != null ) {
-    drawBlobs(improvedImg);
+    //drawBlobs(improvedImg);
+    drawPoints(improvedImg);
     image(boxes, 568, 320);
     text("Displacement boxes", 568+234, 320+300);
   }
@@ -99,7 +100,7 @@ void draw(){
   }
 
   // export the whole image frame
-  //saveFrame("export/image-######.tif");
+  saveFrame("export/image-######.tif");
   
 }
 
@@ -271,6 +272,36 @@ void drawBlobs(PImage bin){
    
    // go through all the blobs and draw them to the PGraphic
    for ( Blob b : blbs ) boxes.rect(b.minx, b.maxy, b.maxx, b.miny);
+
+   // close the object
+   boxes.endDraw();
+   
+   // Return PGraphic object.
+   //return field;
+}
+
+// Draws the blobs
+// @param: enhanced binary image
+// @return: PGraphic with blobs on it
+void drawPoints(PImage bin){
+   // set up a new PGraphic for temporarily dumping the blobs on.
+   //PGraphics field;
+   //field = createGraphics(bin.width, bin.height);
+   
+   // get the blobs
+   ArrayList<PVector> pints = findPoints(bin);  
+
+   // set up the field.
+   boxes.beginDraw();
+   boxes.clear();
+   boxes.background(0);
+   boxes.fill(255,0,0);
+   
+   // set the method that Processing needs to use for drawing the objects.
+   boxes.rectMode(CORNERS);
+   
+   // go through all the blobs and draw them to the PGraphic
+   for ( PVector p : pints ) boxes.ellipse(p.x, p.y, 15, 15);
 
    // close the object
    boxes.endDraw();
