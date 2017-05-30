@@ -2,7 +2,7 @@
 //
 //  @author: wallarug
 //  @created: 17/05/2017 22:11 PM
-//  @modified: 26/05/2017 00:41 AM
+//  @modified: 30/05/2017 20:41 PM
 
 // IMPORTS
 import processing.video.*;
@@ -13,17 +13,24 @@ int GLOBAL_WIDTH = 568;
 int GLOBAL_HEIGHT = 320;
 
 // GLOBAL VARIABLES
+// Movie Files
 Movie originalMovie;
+
+// Sound Files
+
+// Image Files
 PImage segmentedImg;
 PImage binaryImg;
 PImage improvedImg;
+
+// Data Structures
 ArrayList<PImage> imageParts;
-PGraphics boxes;
-PGraphics dots;
-//ArrayList<Blob> xyz;
-int framenumber = 0;
-int BLOCKSIZE = 13;
 Creature monster;
+int framenumber = 0;
+
+// Canvas Elements
+PGraphics boxes;
+PGraphics monsterCanvas;
 
 // Processing Set-up function.  This is run once.  All initial 
 //  parameters and settings are set here.
@@ -35,7 +42,7 @@ void setup(){
   
   // use only one PGraphics object throughout the whole execution to save memory
   boxes = createGraphics(GLOBAL_WIDTH, GLOBAL_HEIGHT);
-  dots = createGraphics(GLOBAL_WIDTH, GLOBAL_HEIGHT);
+  monsterCanvas = createGraphics(GLOBAL_WIDTH, GLOBAL_HEIGHT);
   
   imageParts = new ArrayList<PImage>(5);
   imageParts.add(loadImage("monster/lefthand.png"));
@@ -93,7 +100,7 @@ void draw(){
   
   // BOTTOM RIGHT (6): draw the dots
   if ( improvedImg != null ) {
-    drawDots(improvedImg);
+    //drawDots(improvedImg);
     image(dots, 1136, 320);
     //image(dots, 0, 0);
     text("Dots Image", 1136+234, 320+300);
@@ -359,142 +366,13 @@ void drawPoints(PImage bin){
 // FUNCTIONS FOR GENERATING MOVIE OBJECTS
 
 // Draws the creature to the display.
-// @param: ArrayList of Blobs
+// @param: ArrayList of Vectors
 // @return: create onto image
-void drawCreatureBlob(ArrayList<Blob> blobs){
-  int arrlen = blobs.size();
-  Blob top_left = null;
-  Blob top_right = null;
-  Blob centre = null;
-  Blob bot_left = null;
-  Blob bot_right = null;
-  ArrayList<Blob> sorted = new ArrayList<Blob>(5);  // temp array
-    
-  // ONLY RUN IF WE HAVE THE RIGHT NUMBER OF DOTS, OTHERWISE, DRAW PREVIOUS
-  if ( arrlen == 5 ) {
-    // find the points for the top. (minimising y)
-    int targetx = 999;
-    int targety = 999;
-    
-    // find top left.
-    targetx = 999;
-    targety = 999;
-    for ( Blob b : blobs ){
-        if (b.miny < targety && b.minx < targetx) {
-          targety = b.cy();
-          targetx = b.cx();
-          top_left = b;
-        }
-    }
-    
-    blobs.remove(top_left);
-    
-    // find top right
-    targetx = 0;
-    targety = 999;
-    for ( Blob b : blobs ){
-        if (b.cy() < targety && b.cx() > targetx) {
-          targety = b.cy();
-          targetx = b.cx();
-          top_right = b;
-        }
-    }
-    
-    blobs.remove(top_right);
-    
-    // find bottom left
-    targetx = 999;
-    targety = 0;
-    for ( Blob b : blobs ){
-        if (b.cy() > targety && b.cx() < targetx) {
-          targety = b.cy();
-          targetx = b.cx();
-          bot_left = b;
-        }
-    } 
-    
-    blobs.remove(bot_left);
-    
-    // find bottom right
-    targetx = 0;
-    targety = 0;
-    for ( Blob b : blobs ){
-        if (b.cy() > targety && b.cx() > targetx) {
-          targety = b.cy();
-          targetx = b.cx();
-          bot_right = b;
-        }
-    }
-    
-    blobs.remove(bot_right);
-    
-    // find centre - the cheat method.
-    for ( Blob b : blobs ){
-        if ( ( b == top_left ||
-             b == top_right ||
-             b == bot_left ||
-             b == bot_right ) && 
-             arrlen > 4 ){}
-        else {
-          centre = b;
-          break;
-        }       
-    }
-    
-    // determine which parts are missing.
-    // compinsate for missing points by using the previous values (done in class)
-    // add all to the array list to update the creature
-  }
-
-  if ( arrlen < 5 ) {
-    // find the points for the top. (minimising y)
-    int targetx = 999;
-    int targety = 999;
-    
-    // find top left.
-    targetx = 999;
-    targety = 999;
-    for ( Blob b : blobs ){
-        if (b.miny < targety && b.minx < targetx) {
-          targety = b.cy();
-          targetx = b.cx();
-          top_left = b;
-        }
-    }
-    
-    blobs.remove(top_left);
-    
-    // find top right
-    targetx = 0;
-    targety = 999;
-    for ( Blob b : blobs ){
-        if (b.cy() < targety && b.cx() > targetx) {
-          targety = b.cy();
-          targetx = b.cx();
-          top_right = b;
-        }
-    }
-    
-    blobs.remove(top_right);
-    
-    
-    // determine which parts are missing.
-    // compinsate for missing points by using the previous values (done in class)
-    // add all to the array list to update the creature
-  }  
-  
-  // find the correct parts based on dot position
-  sorted.add(top_left);
-  sorted.add(top_right);
-  sorted.add(bot_left);
-  sorted.add(bot_right);
-  sorted.add(centre);
-  
+void drawCreatureBlob(ArrayList<PVector> vectors){  
   // update monster
-  monster.update(sorted);
+  monster.update(vectors);
   
   // render the monster
   monster.render();
   
-    
 }
