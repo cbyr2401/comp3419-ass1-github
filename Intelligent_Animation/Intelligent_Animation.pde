@@ -99,7 +99,7 @@ void draw(){
   }
 
   // export the whole image frame
-  saveFrame("export/image-######.tif");
+  //saveFrame("export/image-######.tif");
   
 }
 
@@ -148,28 +148,30 @@ PImage segmentMarkers(PImage video, boolean bin_image)
       //  and get the color at that pixel.
       int mloc = x + y * video.width;
       color c = video.pixels[mloc];
-      takeColor = red(c) > 149 
-                  && green(c) > 37 
-                  && green(c) < 199 
-                  && blue(c) > 39
-                  && blue(c) < 125;
-      // face chromes
-      ignoreFilter1 = red(c) > 190 
-                  && red(c) < 254
-                  && green(c) > 132
-                  && green(c) < 199
-                  && blue(c) > 44
-                  && blue(c) < 125;
-      // browns
-      ignoreFilter2 = red(c) > 148 
-                  && red(c) < 201
-                  && green(c) > 83
-                  && green(c) < 166
-                  && blue(c) > 39
-                  && blue(c) < 116;     
+      //takeColor = red(c) > 149 
+      //            && green(c) > 37 
+      //            && green(c) < 199 
+      //            && blue(c) > 39
+      //            && blue(c) < 125;
+      //// face chromes
+      //ignoreFilter1 = red(c) > 190 
+      //            && red(c) < 254
+      //            && green(c) > 132
+      //            && green(c) < 199
+      //            && blue(c) > 44
+      //            && blue(c) < 125;
+      //// browns
+      //ignoreFilter2 = red(c) > 148 
+      //            && red(c) < 201
+      //            && green(c) > 83
+      //            && green(c) < 166
+      //            && blue(c) > 39
+      //            && blue(c) < 116;
+      
+      takeColor = red(c) > 140 && green(c) < 80 && blue(c) < 90;
                  
       // if the pixel correct has color, calculate the new location 
-      if( takeColor && !ignoreFilter1 && !ignoreFilter2){
+      if( takeColor ) {//&& !ignoreFilter1 && !ignoreFilter2){
         int bgx = constrain(x + adjust_width, 0, blank.width);
         int bgy = constrain(y + adjust_height, 0, blank.height);
         int bgloc = bgx + bgy * blank.width;
@@ -256,7 +258,7 @@ void drawDots(PImage bin){
    // close the object
    dots.endDraw();
    
-   drawCreature(blbs);
+   //drawCreature(blbs);
    
    println("dots: " + blbs.size() );
    
