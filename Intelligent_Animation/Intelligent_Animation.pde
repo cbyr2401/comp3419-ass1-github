@@ -20,7 +20,7 @@ PImage improvedImg;
 ArrayList<PImage> imageParts;
 PGraphics boxes;
 PGraphics dots;
-ArrayList<Blob> xyz;
+//ArrayList<Blob> xyz;
 int framenumber = 0;
 int BLOCKSIZE = 13;
 Creature monster;

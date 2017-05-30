@@ -26,26 +26,26 @@ public class Creature{
       //centre = new BodyPart();  
     }
     
-    public void update(ArrayList<Blob> list){
+    public void update(ArrayList<PVector> list){
        // order: top left, top right, bot left, bot right, centre
        if ( list.get(0) != null ){
-         top_left.setPosition(list.get(0).cx(), list.get(0).cy());
+         top_left.setPosition(list.get(0).x, list.get(0).y);
        }
        
        if ( list.get(1) != null ){
-         top_right.setPosition(list.get(1).cx(), list.get(1).cy());
+         top_right.setPosition(list.get(1).x, list.get(1).y);
        }
        
        if ( list.get(2) != null ){
-         bot_left.setPosition(list.get(2).cx(), list.get(2).cy());
+         bot_left.setPosition(list.get(2).x, list.get(2).y);
        }
        
        if ( list.get(3) != null ){
-         bot_right.setPosition(list.get(3).cx(), list.get(3).cy());
+         bot_right.setPosition(list.get(3).x, list.get(3).y);
        }
        
        if ( list.get(4) != null ){
-         centre.setPosition(list.get(4).cx(), list.get(4).cy());
+         centre.setPosition(list.get(4).x, list.get(4).y);
        }
     }
     
@@ -92,14 +92,20 @@ public class BodyPart {
      ycoord = y;
    }
    
+   public void setPosition(float x, float y){
+     xcoord = (int)x;
+     ycoord = (int)y;
+   }
+   
    public void setSize(int w, int h){
       m_height = h;
       m_width = w;
+      texture.resize(w, h);
    }
    
    public void render(){ 
      // resize
-     texture.resize(m_width, m_height);
+     //texture.resize(m_width, m_height);
      // set draw mode to from centre
      imageMode(CENTER);
      // draw object
@@ -114,9 +120,9 @@ public class BodyPart {
       ellipse(xcoord,ycoord,30,30);
       // arm
       strokeWeight(12);
-      //line(xcoord,ycoord,(ycoord+center.cx()-10)/2,(ycoord+center.cy()+25)/2);
-      //line((xcoord+center.cx()-10)/2,(ycoord+center.cy()+25)/2,center.cx(),center.cy());
-      line(xcoord, ycoord, center.cx(), center.cy());
+      //line(xcoord,ycoord,(ycoord+center.x-10)/2,(ycoord+center.y+25)/2);
+      //line((xcoord+center.x-10)/2,(ycoord+center.y+25)/2,center.x,center.y);
+      line(xcoord, ycoord, center.xcoord, center.ycoord);
    }
    
    public void renderBody(){
@@ -125,7 +131,4 @@ public class BodyPart {
       strokeWeight(1);
       ellipse(xcoord,ycoord,60,100);
    }
-   
-   public int cx(){ return xcoord; }
-   public int cy(){ return ycoord; }
 }
