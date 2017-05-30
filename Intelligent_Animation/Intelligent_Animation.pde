@@ -110,7 +110,9 @@ void movieEvent(Movie m) {
   m.read();
   
   segmentedImg = segmentMarkers(m, false);
+  //segmentedImg = segmentMonkey(m, false);
   binaryImg = segmentMarkers(m, true);
+  //binaryImg = segmentMonkey(m, true);
   improvedImg = correctAndEnhance(binaryImg);
   //boxes = drawBlobs(improvedImg);
   
@@ -170,6 +172,55 @@ PImage segmentMarkers(PImage video, boolean bin_image)
                  
       // if the pixel correct has color, calculate the new location 
       if( takeColor && !ignoreFilter1 && !ignoreFilter2){
+        int bgx = constrain(x + adjust_width, 0, blank.width);
+        int bgy = constrain(y + adjust_height, 0, blank.height);
+        int bgloc = bgx + bgy * blank.width;
+        if ( bin_image == true ){
+          blank.pixels[bgloc] = color(255,255,255);
+        }
+        else {
+          blank.pixels[bgloc] = c;
+        }
+      }
+    }
+  }
+  // return the new canvas with the segmented image on it
+  return blank;
+}
+
+// Segements the red markers from the image and returns as a PImage
+// @param: PImage video frame, produce binary image
+// @return: PImage segmented frame
+PImage segmentMonkey(PImage video, boolean bin_image)
+{
+  // variables to control the placement within the new background
+  //  this is required if your canvas is a different size to the
+  //  original video.
+  int adjust_width = 0;
+  int adjust_height = 0;
+  
+  // create a blank image to place the segment on
+  PImage blank = new PImage(video.width, video.height);
+  
+  // Remove all the pixels that do not contain high enough levels of 
+  //  red.  The thresholds have been found by experimentation:
+  boolean takeColor = false;
+  
+  // go through all the pixels of the monkey frame.
+  for(int x = 0; x < video.width; x++){
+    for(int y = 0; y < video.height; y++){
+      // work out the current pixel location in the matrix
+      //  and get the color at that pixel.
+      int mloc = x + y * video.width;
+      color c = video.pixels[mloc];
+      takeColor = red(c) > 149 
+                  //&& green(c) > 37 
+                  //&& green(c) < 199 
+                  //&& blue(c) > 39
+                  && blue(c) < 125;
+                 
+      // if the pixel correct has color, calculate the new location 
+      if( takeColor ){
         int bgx = constrain(x + adjust_width, 0, blank.width);
         int bgy = constrain(y + adjust_height, 0, blank.height);
         int bgloc = bgx + bgy * blank.width;
