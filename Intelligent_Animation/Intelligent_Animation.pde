@@ -303,12 +303,7 @@ ArrayList<PVector> findPoints(PImage bin){
     if ( !bl ) points.add(new PVector(minimumx+25, maximumy-25));
     if ( !br ) points.add(new PVector(maximumx-25, maximumy-25));
     
-    // compute points - old method without finding the actual points.  Produces
-    //  a very large box and only shows small movements
-    //points.add(new PVector(minimumx, minimumy));
-    //points.add(new PVector(maximumx, minimumy));
-    //points.add(new PVector(minimumx, maximumy));
-    //points.add(new PVector(maximumx, maximumy));
+    // calculate the centre point
     points.add(new PVector((minimumx + maximumx) / 2, (minimumy+maximumy) / 2));
   
     return points;
