@@ -109,7 +109,7 @@ void draw(){
   }
 
   // export the whole image frame
-  saveFrame("export/image-######.tif");
+  //saveFrame("export/image-######.tif");
   
 }
 
