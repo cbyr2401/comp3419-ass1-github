@@ -19,7 +19,6 @@ Movie originalMovie;
 // Sound Files
 
 // Image Files
-PImage segmentedImg;
 PImage binaryImg;
 PImage improvedImg;
 
@@ -29,19 +28,18 @@ Creature monster;
 int framenumber = 0;
 
 // Canvas Elements
-PGraphics boxes;
 PGraphics monsterCanvas;
 
 // Processing Set-up function.  This is run once.  All initial 
 //  parameters and settings are set here.
 void setup(){
-  size(1704,640);  // the size of the window to be rendered.
+  // the size of the window to be rendered.
+  size(1280,720);  
   
   // the original un-modified file that we are importing to processing
   originalMovie = new Movie(this, sketchPath("monkey.mov"));
   
   // use only one PGraphics object throughout the whole execution to save memory
-  boxes = createGraphics(GLOBAL_WIDTH, GLOBAL_HEIGHT);
   monsterCanvas = createGraphics(GLOBAL_WIDTH, GLOBAL_HEIGHT);
   
   // load all the image files into a single array, these are then used to create the creature.
@@ -52,11 +50,11 @@ void setup(){
   imageParts.add(loadImage("monster/rightfoot.png"));
   imageParts.add(loadImage("monster/body.png"));
   
+  // create the new creature / monster overlay
   monster = new Creature(imageParts);
   
   // play the original movie file
   originalMovie.play();
-  //originalMovie.loop();
   
 }
 
@@ -64,20 +62,11 @@ void setup(){
 //  and controls all drawing / output to the display.
 void draw(){
   
-  // some debug text
-  textSize(18);
-  fill(255,0,0);
+  // clear the frame ready for next execution
   background(0); // clear
-  
-  // TOP LEFT (1): draw the original movie
-  image(originalMovie, 0, 0);
-  text("Original Movie File", 234, 300);
-  
-  // TOP CENTER (2): draw the segmented movie
-  if ( segmentedImg != null ) {
-    image(segmentedImg, 568, 0);
-    text("Segmented Image", 568+234, 300);
-  }
+
+  // draw on the background image
+  //image(backgroundImage, 0, 0);
   
   // TOP RIGHT (3): draw the binary image
   if ( binaryImg != null ) {
@@ -89,14 +78,6 @@ void draw(){
   if ( improvedImg != null ) {  
     image(improvedImg, 0, 320);
     text("Improved Binary Image", 234, 320+300);
-  }
-  
-  // BOTTOM CENTER (5): draw the boxes
-    if ( improvedImg != null ) {
-    //drawBlobs(improvedImg);
-    drawPoints(improvedImg);
-    image(boxes, 568, 320);
-    text("Points", 568+234, 320+300);
   }
   
   // BOTTOM RIGHT (6): draw the dots
@@ -117,14 +98,12 @@ void draw(){
 // Processing Movie Event function.  This is called every time a 
 //  new frame is available to read for the playing movie.
 void movieEvent(Movie m) {
+  // read in the next movie frame
   m.read();
   
-  segmentedImg = segmentMarkers(m, false);
-  //segmentedImg = segmentMonkey(m, false);
+  // create and built all the images we need.
   binaryImg = segmentMarkers(m, true);
-  //binaryImg = segmentMonkey(m, true);
   improvedImg = correctAndEnhance(binaryImg);
-  //boxes = drawBlobs(improvedImg);
   
   // save the frame
   //segmentedImg.save(sketchPath("") + "seg/image" + nf(framenumber, 4) + ".tif");
@@ -198,8 +177,6 @@ PImage segmentMarkers(PImage video, boolean bin_image)
   return blank;
 }
 
-
-
 // Improves the segemented image by removing artifacts
 // @param: PImage binary image
 // @return: PImage improveed frame
@@ -215,7 +192,6 @@ PImage correctAndEnhance(PImage bin){
 
   return improvement;
 }
-
 
 // Uses the QUAD Method for getting the points.
 // @param: enhanced binary image
@@ -275,7 +251,6 @@ ArrayList<PVector> findPoints(PImage bin){
         }
       }
     }
-    
     
     // find the points individually (top right)
     TRLoop:
@@ -338,32 +313,6 @@ ArrayList<PVector> findPoints(PImage bin){
   
     return points;
 }
-
-
-
-// Draws the points onto the "boxes" PGraphic
-// @param: enhanced binary image
-// @return: PGraphic with blobs on it
-void drawPoints(PImage bin){   
-   // get the points
-   ArrayList<PVector> pints = findPoints(bin);  
-
-   // set up the field.
-   boxes.beginDraw();
-   boxes.clear();
-   boxes.background(0);
-   boxes.fill(255,0,0);
-   
-   // go through all the blobs and draw them to the PGraphic
-   for ( PVector p : pints ) boxes.ellipse(p.x, p.y, 15, 15);
-
-   // close the object
-   boxes.endDraw();
-   
-   // **DEBUG ONLY:
-   //println("points: ", pints.size());
-}
-
  //<>//
 // FUNCTIONS FOR GENERATING MOVIE OBJECTS
 
