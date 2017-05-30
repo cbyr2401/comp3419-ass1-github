@@ -188,6 +188,8 @@ PImage segmentMarkers(PImage video, boolean bin_image)
   return blank;
 }
 
+
+
 // Improves the segemented image by removing artifacts
 // @param: PImage binary image
 // @return: PImage improveed frame
@@ -202,6 +204,48 @@ PImage correctAndEnhance(PImage bin){
   for ( int i = 0; i < 7; i++) improvement = im_dilation(improvement);
 
   return improvement;
+}
+
+
+// Uses the Quad Method for getting the points.
+// @param: enhanced binary image
+// @return: PGraphic with blobs on it
+ArrayList<PVector> findPoints(PImage bin){
+    ArrayList<PVector> points = new ArrayList<PVector>(5);
+    
+    // search the binary image for the four corners of the quad.
+    //  Then we can calculate the center.
+    int maximumx = 0;
+    int maximumy = 0;
+    int minimumx = 999;
+    int minimumy = 999;
+    
+    color white = color(255,255,255);
+    int jump = 1;
+    
+    for ( int x = 0; x < bin.width; x += jump ){
+      for ( int y = 0; y < bin.height; y += jump ){
+        int loc = x + y * bin.width;
+        color c = bin.pixels[loc];
+        // if pixel is white:
+        if ( c == white) {
+           if ( x > maximumx ) maximumx = x;
+           else if ( x < minimumx ) minimumx = x;
+           
+           if ( y > maximumy ) maximumy = y;
+           else if (y < minimumy ) minimumy = y;
+        }
+      }
+    }
+    
+    // compute points
+    points.add(new PVector(minimumx, minimumy));
+    points.add(new PVector(maximumx, minimumy));
+    points.add(new PVector(minimumx, maximumy));
+    points.add(new PVector(maximumx, maximumy));
+    points.add(new PVector((minimumx + maximumx) / 2, (minimumy+maximumy) / 2));
+  
+    return points;
 }
 
 
