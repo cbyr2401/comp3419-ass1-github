@@ -44,6 +44,7 @@ void setup(){
   boxes = createGraphics(GLOBAL_WIDTH, GLOBAL_HEIGHT);
   monsterCanvas = createGraphics(GLOBAL_WIDTH, GLOBAL_HEIGHT);
   
+  // load all the image files into a single array, these are then used to create the creature.
   imageParts = new ArrayList<PImage>(5);
   imageParts.add(loadImage("monster/lefthand.png"));
   imageParts.add(loadImage("monster/righthand.png"));
@@ -51,7 +52,7 @@ void setup(){
   imageParts.add(loadImage("monster/rightfoot.png"));
   imageParts.add(loadImage("monster/body.png"));
   
-  monster = new Creature();
+  monster = new Creature(imageParts);
   
   // play the original movie file
   originalMovie.play();
@@ -101,7 +102,8 @@ void draw(){
   // BOTTOM RIGHT (6): draw the dots
   if ( improvedImg != null ) {
     //drawDots(improvedImg);
-    image(dots, 1136, 320);
+    drawCreature(improvedImg);
+    image(monsterCanvas, 1136, 320);
     //image(dots, 0, 0);
     text("Dots Image", 1136+234, 320+300);
   }
@@ -362,17 +364,19 @@ void drawPoints(PImage bin){
    //println("points: ", pints.size());
 }
 
- //<>// //<>//
+ //<>//
 // FUNCTIONS FOR GENERATING MOVIE OBJECTS
 
 // Draws the creature to the display.
 // @param: ArrayList of Vectors
 // @return: create onto image
-void drawCreatureBlob(ArrayList<PVector> vectors){  
+void drawCreature(PImage img){ 
+  // find points
+  ArrayList<PVector> vectors = findPoints(img);
+  
   // update monster
   monster.update(vectors);
   
   // render the monster
-  monster.render();
-  
+  monster.render(monsterCanvas);
 }

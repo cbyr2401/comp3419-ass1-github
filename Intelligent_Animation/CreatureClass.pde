@@ -6,12 +6,12 @@ public class Creature{
     BodyPart bot_right = null;
     BodyPart centre = null;
     
-    public Creature() {
-      top_left = new BodyPart(imageParts.get(0));
-      top_right = new BodyPart(imageParts.get(1));
-      bot_left = new BodyPart(imageParts.get(2));
-      bot_right = new BodyPart(imageParts.get(3));
-      centre = new BodyPart(imageParts.get(4));  
+    public Creature(ArrayList<PImage> imgp) {
+      top_left = new BodyPart(imgp.get(0));
+      top_right = new BodyPart(imgp.get(1));
+      bot_left = new BodyPart(imgp.get(2));
+      bot_right = new BodyPart(imgp.get(3));
+      centre = new BodyPart(imgp.get(4));  
       
       top_left.setSize(30,30);
       top_right.setSize(30,30);
@@ -64,6 +64,28 @@ public class Creature{
       
       // extra parts
       
+    }
+    
+    public void render(PGraphics canvas){
+       canvas.beginDraw();
+       canvas.clear();
+       canvas.imageMode(CENTER);
+       canvas.stroke(0,255,0);
+       
+       canvas.image(bot_left.texture, bot_left.xcoord, bot_left.ycoord);
+       canvas.line(bot_left.xcoord, bot_left.ycoord, centre.xcoord, centre.ycoord);
+       
+       canvas.image(bot_right.texture, bot_right.xcoord, bot_right.ycoord);
+       canvas.line(bot_right.xcoord, bot_right.ycoord, centre.xcoord, centre.ycoord);
+       
+       canvas.image(top_left.texture, top_left.xcoord, top_left.ycoord);
+       canvas.line(top_left.xcoord, top_left.ycoord, centre.xcoord, centre.ycoord);
+       
+       canvas.image(top_right.texture, top_right.xcoord, top_right.ycoord);
+       canvas.line(top_right.xcoord, top_right.ycoord, centre.xcoord, centre.ycoord);
+       
+       canvas.image(centre.texture, centre.xcoord, centre.ycoord);       
+       canvas.endDraw();
     }
   
   
