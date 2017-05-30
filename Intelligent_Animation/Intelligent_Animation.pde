@@ -223,9 +223,7 @@ ArrayList<PVector> findPoints(PImage bin){
     
     color white = color(255,255,255);
     int jump = 1;
-    int searcharea = 60;
-    
-    
+
     for ( int x = 0; x < bin.width; x += jump ){
       for ( int y = 0; y < bin.height; y += jump ){
         int loc = x + y * bin.width;
@@ -241,16 +239,27 @@ ArrayList<PVector> findPoints(PImage bin){
       }
     }
     
+    int searcharea_x = 25;
+    int searcharea_y = 60;
+    int quadrantx = (minimumx + maximumx) / 2;
+    int quadranty = (minimumy + maximumy) / 2;
+    int quadrant_threshold = 15;
+    
+    boolean tl = false;
+    boolean tr = false;
+    boolean bl = false;
+    boolean br = false;
+    
     // find the points individually. (top left)
     TLLoop:
-    
-    for ( int y = minimumy; y < maximumy - searcharea; y += jump ){
-      for ( int x = minimumx; x < maximumx - searcharea; x += jump ){
+    for ( int x = minimumx; x < quadrantx - quadrant_threshold; x += jump ){ //maximumx - searcharea_x
+      for ( int y = minimumy; y < quadranty - quadrant_threshold; y += jump ){ //maximumy - searcharea_y
         int loc = x + y * bin.width;
         color c = bin.pixels[loc];
         // if pixel is white:
         if ( c == white) {
            points.add(new PVector(x, y));
+           tl = true;
            break TLLoop;
         }
       }
@@ -259,14 +268,14 @@ ArrayList<PVector> findPoints(PImage bin){
     
     // find the points individually (top right)
     TRLoop:
-    
-    for ( int y = minimumy; y < maximumy - searcharea; y += jump ){
-      for ( int x = maximumx; x > minimumx + searcharea; x -= jump ){
+    for ( int x = maximumx; x > quadrantx + quadrant_threshold; x -= jump ){ //minimumx + searcharea_x
+      for ( int y = minimumy; y < quadranty - quadrant_threshold; y += jump ){ //maximumy - searcharea_y
         int loc = x + y * bin.width;
         color c = bin.pixels[loc];
         // if pixel is white:
         if ( c == white) { 
            points.add(new PVector(x, y));
+           tr = true;
            break TRLoop;
         }
       }
@@ -274,14 +283,14 @@ ArrayList<PVector> findPoints(PImage bin){
     
     // find the points individually (bottom left)
     BLLoop:
-    
-    for ( int y = maximumy; y > minimumy + searcharea; y -= jump ){
-      for ( int x = minimumx; x < maximumx - searcharea; x += jump ){
+    for ( int x = minimumx; x < quadrantx - quadrant_threshold; x += jump ){ //maximumx - searcharea_x
+      for ( int y = maximumy; y > quadranty + quadrant_threshold; y -= jump ){ //minimumy + searcharea_y
         int loc = x + y * bin.width;
         color c = bin.pixels[loc];
         // if pixel is white:
         if ( c == white) {
            points.add(new PVector(x, y));
+           bl = true;
            break BLLoop;
         }
       }
@@ -289,18 +298,24 @@ ArrayList<PVector> findPoints(PImage bin){
     
     // find the points individually (bottom right)
     BRLoop:
-    
-    for ( int y = maximumy; y > minimumy + searcharea; y -= jump ){
-      for ( int x = maximumx; x > minimumx + searcharea; x -= jump ){
+    for ( int x = maximumx; x > quadrantx + quadrant_threshold; x -= jump ){ // minimumx + searcharea_x
+      for ( int y = maximumy; y > quadranty + quadrant_threshold; y -= jump ){ //minimumy + searcharea_y
         int loc = x + y * bin.width;
         color c = bin.pixels[loc];
         // if pixel is white:
         if ( c == white) { 
            points.add(new PVector(x, y));
+           br = true;
            break BRLoop;
         }
       }
     }
+    
+    // check we have all the points
+    if ( !tl ) points.add(new PVector(minimumx+25, minimumy+25));
+    if ( !tr ) points.add(new PVector(maximumx-25, minimumy+25));
+    if ( !bl ) points.add(new PVector(minimumx+25, maximumy-25));
+    if ( !br ) points.add(new PVector(maximumx-25, maximumy-25));
     
     // compute points
     //points.add(new PVector(minimumx, minimumy));
