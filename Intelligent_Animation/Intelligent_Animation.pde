@@ -21,6 +21,7 @@ Movie originalMovie;
 // Image Files
 PImage binaryImg;
 PImage improvedImg;
+PImage backgroundImg;
 
 // Data Structures
 ArrayList<PImage> imageParts;
@@ -53,6 +54,9 @@ void setup(){
   // create the new creature / monster overlay
   monster = new Creature(imageParts);
   
+  // load the background image
+  //backgroundImg = loadImage("");
+  
   // play the original movie file
   originalMovie.play();
   
@@ -68,26 +72,18 @@ void draw(){
   // draw on the background image
   //image(backgroundImage, 0, 0);
   
-  // TOP RIGHT (3): draw the binary image
-  if ( binaryImg != null ) {
-    image(binaryImg, 1136, 0);
-    text("Binary Image", 1136+234, 300);
-  }
-  
-  // BOTTOM LEFT (4): draw the improved binary image
-  if ( improvedImg != null ) {  
-    image(improvedImg, 0, 320);
-    text("Improved Binary Image", 234, 320+300);
-  }
-  
-  // BOTTOM RIGHT (6): draw the dots
+  // draw the creature to the screen if there is an image avaiable.
   if ( improvedImg != null ) {
-    //drawDots(improvedImg);
     drawCreature(improvedImg);
     image(monsterCanvas, 1136, 320);
-    //image(dots, 0, 0);
-    text("Monster Canvas Image", 1136+234, 320+300);
   }
+  
+  // draw the randomly generated objects
+  
+  
+  // check collisions with the random objects
+  
+  
 
   // export the whole image frame
   //saveFrame("export/image-######.tif");
