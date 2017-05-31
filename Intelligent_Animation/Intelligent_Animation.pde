@@ -9,14 +9,20 @@ import processing.video.*;
 import processing.sound.*;
 
 // FIXED DIMENTIONS - bad practice
-int GLOBAL_WIDTH = 568;
-int GLOBAL_HEIGHT = 320;
+int VIDEO_WIDTH = 568;
+int VIDEO_HEIGHT = 320;
+int GLOBAL_WIDTH = 1280;
+int GLOBAL_HEIGHT = 720;
 
 // GLOBAL VARIABLES
 // Movie Files
 Movie originalMovie;
+Movie backgroundMovie;
 
 // Sound Files
+SoundFile backgroundMusic;
+SoundFile sFx1;
+SoundFile sFx2;
 
 // Image Files
 PImage binaryImg;
@@ -35,27 +41,40 @@ PGraphics monsterCanvas;
 //  parameters and settings are set here.
 void setup(){
   // the size of the window to be rendered.
-  size(1280,720);  
+  size(1280, 720);
   
   // the original un-modified file that we are importing to processing
-  originalMovie = new Movie(this, sketchPath("monkey.mov"));
+  originalMovie = new Movie(this, sketchPath("resources/video/monkey.mov"));
+  backgroundMovie = new Movie(this, sketchPath("resources/video/star_trails.mov"));
   
   // use only one PGraphics object throughout the whole execution to save memory
-  monsterCanvas = createGraphics(GLOBAL_WIDTH, GLOBAL_HEIGHT);
+  monsterCanvas = createGraphics(VIDEO_WIDTH, VIDEO_HEIGHT);
   
   // load all the image files into a single array, these are then used to create the creature.
   imageParts = new ArrayList<PImage>(5);
-  imageParts.add(loadImage("monster/lefthand.png"));
-  imageParts.add(loadImage("monster/righthand.png"));
-  imageParts.add(loadImage("monster/leftfoot.png"));
-  imageParts.add(loadImage("monster/rightfoot.png"));
-  imageParts.add(loadImage("monster/body.png"));
+  imageParts.add(loadImage("resources/image/monster/lefthand.png"));
+  imageParts.add(loadImage("resources/image/monster/righthand.png"));
+  imageParts.add(loadImage("resources/image/monster/leftfoot.png"));
+  imageParts.add(loadImage("resources/image/monster/rightfoot.png"));
+  imageParts.add(loadImage("resources/image/monster/body.png"));
   
   // create the new creature / monster overlay
   monster = new Creature(imageParts);
   
   // load the background image
   //backgroundImg = loadImage("");
+  
+  // load the sound effect files
+  backgroundMusic = new SoundFile(this, sketchPath("resources/sound/shooting-stars.mp3"));
+  backgroundMusic.play();
+  backgroundMusic.jump(13.00);
+  
+  //sFx1 = new SoundFile(this, sketchPath(""));
+  
+  // speed up the second movie, it's too slow
+  //backgroundMovie.speed(4.0);
+  //backgroundMovie.loop();
+  backgroundImg = loadImage("resources/image/space.jpg");
   
   // play the original movie file
   originalMovie.play();
@@ -65,12 +84,19 @@ void setup(){
 // Processing Draw function.  This is run on a constant loop
 //  and controls all drawing / output to the display.
 void draw(){
+  // check the time in the program to see if we need to exit
+  float time = originalMovie.time();
+  float duration = originalMovie.duration();
+  
+  if ( time >= 10.0 ) backgroundMovie.play();
+  
+  if ( time >= duration) exit();
   
   // clear the frame ready for next execution
   background(0); // clear
 
   // draw on the background image
-  //image(backgroundImage, 0, 0);
+  if ( backgroundImg != null ) image(backgroundImg, 0, 0);
   
   // draw the creature to the screen if there is an image avaiable.
   if ( improvedImg != null ) {
@@ -94,16 +120,26 @@ void draw(){
 // Processing Movie Event function.  This is called every time a 
 //  new frame is available to read for the playing movie.
 void movieEvent(Movie m) {
-  // read in the next movie frame
-  m.read();
+  // check we are only getting the movie file we want
+  if ( m == originalMovie)
+  {
+    // read in the next movie frame
+    m.read();
+    
+    // create and built all the images we need.
+    binaryImg = segmentMarkers(m, true);
+    improvedImg = correctAndEnhance(binaryImg);
+    
+    // save the frame
+    //segmentedImg.save(sketchPath("") + "seg/image" + nf(framenumber, 4) + ".tif");
+    framenumber++;
+  }
+  else if ( m == backgroundMovie )
+  {
+    m.read();
+    backgroundImg = m;
+  }
   
-  // create and built all the images we need.
-  binaryImg = segmentMarkers(m, true);
-  improvedImg = correctAndEnhance(binaryImg);
-  
-  // save the frame
-  //segmentedImg.save(sketchPath("") + "seg/image" + nf(framenumber, 4) + ".tif");
-  framenumber++;
 }
 
 
