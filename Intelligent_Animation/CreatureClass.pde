@@ -88,6 +88,41 @@ public class Creature{
        canvas.image(centre.texture, centre.xcoord, centre.ycoord);       
        canvas.endDraw();
     }
+    
+    public boolean checkCollision(MovingObject other){
+      // check all parts
+      if ( bot_left.minx() < other.maxx() &&
+           bot_left.maxx() > other.minx() &&
+           bot_left.miny() < other.maxy() &&
+           bot_left.maxy() > other.miny()
+          ) return true;
+      
+      if ( bot_right.minx() < other.maxx() &&
+           bot_right.maxx() > other.minx() &&
+           bot_right.miny() < other.maxy() &&
+           bot_right.maxy() > other.miny()
+          ) return true;
+          
+      if ( top_left.minx() < other.maxx() &&
+           top_left.maxx() > other.minx() &&
+           top_left.miny() < other.maxy() &&
+           top_left.maxy() > other.miny()
+          ) return true;
+          
+      if ( bot_right.minx() < other.maxx() &&
+           bot_right.maxx() > other.minx() &&
+           bot_right.miny() < other.maxy() &&
+           bot_right.maxy() > other.miny()
+          ) return true;
+          
+      if ( centre.minx() < other.maxx() &&
+           centre.maxx() > other.minx() &&
+           centre.miny() < other.maxy() &&
+           centre.maxy() > other.miny()
+          ) return true;    
+      
+      return false;
+    }
 }
 
 
@@ -152,4 +187,10 @@ public class BodyPart {
       strokeWeight(1);
       ellipse(xcoord,ycoord,60,100);
    }
+   
+   public int maxx() { return xcoord + texture.width; }
+   public int minx() { return xcoord; }
+   public int maxy() { return ycoord + texture.height; }
+   public int miny() { return ycoord; }
+   
 }

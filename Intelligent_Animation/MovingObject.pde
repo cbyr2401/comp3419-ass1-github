@@ -42,22 +42,27 @@ public class MovingObject{
   
   public int maxy() { return y+obj.height; }
   public int miny() { return y; }
-  public int maxx() { return x; }
-  public int minx() { return x+obj.width; }
+  public int maxx() { return x+obj.width; }
+  public int minx() { return x; }
     
 
   public boolean checkCollision(MovingObject other){
     // TODO: Confirm this is working  
     // check if the positions overlap
-      if ( minx() > other.minx() && maxx() < other.minx() 
-           && miny() > other.miny() && maxy() < other.miny() )
+      if ( minx() < other.maxx() &&
+           maxx() > other.minx() &&
+           miny() < other.maxy() &&
+           maxy() > other.miny()
+          )
       {
          // yes they have collided
+         println("collision " + framenumber);
          return true;
       }
              
       return false;
-  }
+  }  
+  
   
   public boolean tbd(){ return delete; }
 }

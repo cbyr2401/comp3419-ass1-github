@@ -28,13 +28,14 @@ SoundFile sFx2;
 PImage binaryImg;
 PImage improvedImg;
 PImage backgroundImg;
+PImage fireball;
 
 // Data Structures
 ArrayList<PImage> imageParts;
 ArrayList<MovingObject> mObjects;
 Creature monster;
 int framenumber = 0;
-int objectAdditionDelay = 50; // in frames;
+int objectAdditionDelay = 25; // in frames;
 
 // Canvas Elements
 PGraphics monsterCanvas;
@@ -71,8 +72,11 @@ void setup(){
   
   // load the sound effect files
   backgroundMusic = new SoundFile(this, sketchPath("resources/sound/shooting-stars.mp3"));
+  sFx1 = new SoundFile(this, sketchPath("resources/sound/airframe_overstress.wav"));
+  sFx2 = new SoundFile(this, sketchPath("resources/sound/Exp_OilRig02.wav"));
   backgroundMusic.play();
   backgroundMusic.jump(13.00);
+  
   
   //sFx1 = new SoundFile(this, sketchPath(""));
   
@@ -80,6 +84,7 @@ void setup(){
   //backgroundMovie.speed(4.0);
   //backgroundMovie.loop();
   backgroundImg = loadImage("resources/image/space.jpg");
+  fireball = loadImage("resources/image/fire.png");
   
   // play the original movie file
   originalMovie.play();
@@ -373,6 +378,7 @@ void drawMovingObjects(){
   int rand = (int) abs(random(-6, 6));
   PGraphics newtemp = null;
   MovingObject tempObj = null;
+  int next = framenumber % objectAdditionDelay;
   
   
   if ( (framenumber % objectAdditionDelay) == 0)
@@ -408,34 +414,62 @@ void drawMovingObjects(){
   
   }
   
-  // object collisions
+  // object collisions - between public transport
+  ArrayList<MovingObject> toRemove = new ArrayList<MovingObject>(1);
   for ( MovingObject mov : mObjects ){
     for ( MovingObject mo : mObjects ){
-       if ( mov.checkCollision(mo) ) {
-          // both have collided, animate the deaths
-          
-          // draw fireball
-          
-          
-          // play sound
-          
-          
+       if ( mov == mo ) {
+          // same element 
+       } else {
+         if ( mov.checkCollision(mo) ) {
+            // both have collided, animate the deaths
+            toRemove.add(mo);
+            toRemove.add(mov);
+            
+            // draw fireball
+            image(fireball, (mo.minx() + mo.maxx()) / 2, mov.y);
+            
+            // play sound
+            sFx1.play();
+            break;
+         }
        }
     }
+  }
+ 
+  mObjects.removeAll(toRemove);
+  toRemove.clear();
+  
+  // object collisions - between public transport and creature
+  for ( MovingObject mo : mObjects ){
+     if ( monster.checkCollision(mo) ) {
+        // both have collided, animate the deaths
+        toRemove.add(mo);
+        
+        // draw fireball
+        image(fireball, (mo.minx() + mo.maxx()) / 2, mo.y);
+        
+        // play sound
+        sFx2.play();
+        break;
+    }
+  }
+ 
+  mObjects.removeAll(toRemove);
+  toRemove.clear();
   
   
   // update all the moving object movements.
   for ( MovingObject mo : mObjects ) {
       mo.move();
   }
-  
-  ArrayList<MovingObject> toRemove = new ArrayList<MovingObject>(1);
+
   // delete any objects that we don't need anymore
   for ( MovingObject mo : mObjects ) {
       if ( mo.tbd() ) toRemove.add(mo);
   }
   
-  mObjects.removeAll(toRemove);
+  
   
   
   
