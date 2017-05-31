@@ -47,9 +47,16 @@ public class MovingObject{
     
 
   public boolean checkCollision(MovingObject other){
-      // check if the positions overlap
-      if ( maxx() 
-      
+    // TODO: Confirm this is working  
+    // check if the positions overlap
+      if ( minx() > other.minx() && maxx() < other.minx() 
+           && miny() > other.miny() && maxy() < other.miny() )
+      {
+         // yes they have collided
+         return true;
+      }
+             
+      return false;
   }
   
   public boolean tbd(){ return delete; }

@@ -411,7 +411,16 @@ void drawMovingObjects(){
   // object collisions
   for ( MovingObject mov : mObjects ){
     for ( MovingObject mo : mObjects ){
-       mov.checkCollision(mo); 
+       if ( mov.checkCollision(mo) ) {
+          // both have collided, animate the deaths
+          
+          // draw fireball
+          
+          
+          // play sound
+          
+          
+       }
     }
   
   
