@@ -71,11 +71,11 @@ void setup(){
   //backgroundImg = loadImage("");
   
   // load the sound effect files
-  backgroundMusic = new SoundFile(this, sketchPath("resources/sound/shooting-stars.mp3"));
+  //backgroundMusic = new SoundFile(this, sketchPath("resources/sound/shooting-stars.mp3"));
   sFx1 = new SoundFile(this, sketchPath("resources/sound/airframe_overstress.wav"));
   sFx2 = new SoundFile(this, sketchPath("resources/sound/Exp_OilRig02.wav"));
-  backgroundMusic.play();
-  backgroundMusic.jump(13.00);
+  //backgroundMusic.play();
+  //backgroundMusic.jump(13.00);
   
   
   //sFx1 = new SoundFile(this, sketchPath(""));
