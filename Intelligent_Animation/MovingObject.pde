@@ -8,10 +8,12 @@ public class MovingObject{
   private int speed = 10;
   private boolean left = false;
   private PGraphics obj;
+  private boolean delete = false;
   
-  public MovingObject(PGraphics o, int xp, int yp, int s, boolean direction){
+  public MovingObject(PGraphics o, int yp, int s, boolean direction){
     obj = o;
-    x = xp - o.width;
+    if ( direction ) x = GLOBAL_WIDTH + o.width;
+    else x = 0 - o.width;
     y = yp;
     left = direction;
     speed = s;
@@ -19,6 +21,12 @@ public class MovingObject{
   
   public void move(){
     // check for collisions
+    
+    // check to be deleted?
+    if ( ( x < (0 - obj.width) && left ) || ( x > (GLOBAL_WIDTH+obj.width) && !left ) )
+    {
+      delete = true;
+    }
     
     
     // move forwards in the desired direction
@@ -31,10 +39,18 @@ public class MovingObject{
     // actually move the object
     image(obj, x, y); 
   }
-   
-  public void checkCollision(){
-     
+  
+  public int maxy() { return y+obj.height; }
+  public int miny() { return y; }
+  public int maxx() { return x; }
+  public int minx() { return x+obj.width; }
     
-    
+
+  public boolean checkCollision(MovingObject other){
+      // check if the positions overlap
+      if ( maxx() 
+      
   }
+  
+  public boolean tbd(){ return delete; }
 }

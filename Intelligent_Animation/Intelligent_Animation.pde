@@ -31,8 +31,10 @@ PImage backgroundImg;
 
 // Data Structures
 ArrayList<PImage> imageParts;
+ArrayList<MovingObject> mObjects;
 Creature monster;
 int framenumber = 0;
+int objectAdditionDelay = 50; // in frames;
 
 // Canvas Elements
 PGraphics monsterCanvas;
@@ -60,6 +62,9 @@ void setup(){
   
   // create the new creature / monster overlay
   monster = new Creature(imageParts);
+  
+  // initialise the array storing the random objects
+  mObjects = new ArrayList<MovingObject>(5);
   
   // load the background image
   //backgroundImg = loadImage("");
@@ -105,7 +110,7 @@ void draw(){
   }
   
   // draw the randomly generated objects
-  
+  drawMovingObjects();
   
   // check collisions with the random objects
   
@@ -361,4 +366,68 @@ void drawCreature(PImage img){
   
   // render the monster
   monster.render(monsterCanvas);
+}
+
+void drawMovingObjects(){
+  //randomSeed(framenumber);
+  int rand = (int) abs(random(-6, 6));
+  PGraphics newtemp = null;
+  MovingObject tempObj = null;
+  
+  
+  if ( (framenumber % objectAdditionDelay) == 0)
+  {
+    
+    // TODO:  Add the whole public transport network to this if else block
+    // TODO:  Documentation
+    if ( rand == 3 ){
+      newtemp = makeSydneyTrain(4);
+      tempObj = new MovingObject(newtemp, GLOBAL_HEIGHT - 100, 25, true);
+    } 
+    else if ( rand == 2 ) {
+      newtemp = makeBus("Forest");
+      tempObj = new MovingObject(newtemp, GLOBAL_HEIGHT / ((framenumber % 6)+1), 12, false);
+    }
+    else if ( rand == 1 ) {
+      newtemp = makeBus("Metro");
+      tempObj = new MovingObject(newtemp, GLOBAL_HEIGHT / ((framenumber % 6)+1), 10, false);
+    }
+    else if ( rand == 4 ) {
+      newtemp = makeBus("Sydney");
+      tempObj = new MovingObject(newtemp, GLOBAL_HEIGHT / ((framenumber % 3)+1), 8, false);
+    }
+    else if ( rand == 5 ){
+      newtemp = makeSydneyLightRail(4);
+      tempObj = new MovingObject(newtemp, GLOBAL_HEIGHT / ((framenumber % 2)+1), 15, true);
+    }
+      
+    
+    if ( tempObj != null ){
+      mObjects.add(tempObj);
+    }
+  
+  }
+  
+  // object collisions
+  for ( MovingObject mov : mObjects ){
+    for ( MovingObject mo : mObjects ){
+       mov.checkCollision(mo); 
+    }
+  
+  
+  // update all the moving object movements.
+  for ( MovingObject mo : mObjects ) {
+      mo.move();
+  }
+  
+  ArrayList<MovingObject> toRemove = new ArrayList<MovingObject>(1);
+  // delete any objects that we don't need anymore
+  for ( MovingObject mo : mObjects ) {
+      if ( mo.tbd() ) toRemove.add(mo);
+  }
+  
+  mObjects.removeAll(toRemove);
+  
+  
+  
 }
