@@ -1,35 +1,8 @@
-
-
-void setup(){
- size(2000,700); 
- noLoop();
-}
-
-void draw(){
-  PGraphics v = makeSydneyTrain(8);
-  PGraphics x = makeSydneyTrain(4);
-  PGraphics y = makeSydneyTrain(2);
-  PGraphics b = makeBus("Sydney");
-  PGraphics f = makeBus("Forest");
-  PGraphics h = makeBus("Hills");
-  PGraphics m = makeBus("Metro");
-  PGraphics lr1 = makeSydneyLightRail(8);
-  PGraphics lr2 = makeSydneyLightRail(4);
-  PGraphics lr3 = makeSydneyLightRail(2);
-  
-  image(v, 10, 10);
-  image(x, 10, 100);
-  image(y, 10, 200);
-  image(b, 10, 300);
-  image(f, 200, 300);
-  image(h, 400, 300);
-  image(m, 600, 300);
-  image(lr1, 10, 400);
-  image(lr2, 10, 500);
-  image(lr3, 10, 600);
-  
-  
-}
+//
+// Custom Drawing library written for COMP3419
+// @author: Cian Byrne
+// @modified: 31/05/2017
+//
 
 PGraphics makeBus(String brand){
   PGraphics bus = createGraphics(150, 80);
