@@ -48,18 +48,20 @@ void setup(){
   
   // the original un-modified file that we are importing to processing
   originalMovie = new Movie(this, sketchPath("resources/video/monkey.mov"));
-  backgroundMovie = new Movie(this, sketchPath("resources/video/star_trails.mov"));
+  //backgroundMovie = new Movie(this, sketchPath("resources/video/star_trails.mov"));
+  backgroundImg = loadImage("resources/image/background.jpg");
+  
   
   // use only one PGraphics object throughout the whole execution to save memory
   monsterCanvas = createGraphics(VIDEO_WIDTH, VIDEO_HEIGHT);
   
   // load all the image files into a single array, these are then used to create the creature.
   imageParts = new ArrayList<PImage>(5);
-  imageParts.add(loadImage("resources/image/monster/lefthand.png"));
-  imageParts.add(loadImage("resources/image/monster/righthand.png"));
-  imageParts.add(loadImage("resources/image/monster/leftfoot.png"));
-  imageParts.add(loadImage("resources/image/monster/rightfoot.png"));
-  imageParts.add(loadImage("resources/image/monster/body.png"));
+  imageParts.add(loadImage("resources/image/commuter/lefthand.png"));
+  imageParts.add(loadImage("resources/image/commuter/righthand.png"));
+  imageParts.add(loadImage("resources/image/commuter/leftfoot.png"));
+  imageParts.add(loadImage("resources/image/commuter/rightfoot.png"));
+  imageParts.add(loadImage("resources/image/commuter/body.png"));
   
   // create the new creature / monster overlay
   monster = new Creature(imageParts);
@@ -83,7 +85,7 @@ void setup(){
   // speed up the second movie, it's too slow
   //backgroundMovie.speed(4.0);
   //backgroundMovie.loop();
-  backgroundImg = loadImage("resources/image/space.jpg");
+  //backgroundImg = loadImage("resources/image/space.jpg");
   fireball = loadImage("resources/image/fire.png");
   
   // play the original movie file
@@ -98,7 +100,7 @@ void draw(){
   float time = originalMovie.time();
   float duration = originalMovie.duration();
   
-  if ( time >= 10.0 ) backgroundMovie.play();
+  //if ( time >= 10.0 ) backgroundMovie.play();
   
   if ( time >= duration) exit();
   

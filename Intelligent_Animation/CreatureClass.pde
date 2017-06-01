@@ -70,7 +70,7 @@ public class Creature{
        canvas.beginDraw();
        canvas.clear();
        canvas.imageMode(CENTER);
-       canvas.stroke(34,177,76);
+       canvas.stroke(75,75,75);
        canvas.strokeWeight(15);
        
        canvas.line(bot_left.xcoord+15, bot_left.ycoord-15, centre.xcoord, centre.ycoord);
@@ -79,6 +79,7 @@ public class Creature{
        canvas.line(bot_right.xcoord-15, bot_right.ycoord+15, centre.xcoord, centre.ycoord);
        canvas.image(bot_right.texture, bot_right.xcoord, bot_right.ycoord);
        
+       canvas.stroke(153, 217, 234);
        canvas.line(top_left.xcoord, top_left.ycoord, centre.xcoord, centre.ycoord);
        canvas.image(top_left.texture, top_left.xcoord, top_left.ycoord);
        
